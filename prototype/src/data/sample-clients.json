@@ -1,0 +1,52 @@
+[
+  {
+    "id": 1,
+    "name": "John Smith",
+    "email": "john@email.com",
+    "phone": "+61 400 123 456",
+    "status": "Active",
+    "contactPerson": "John Smith",
+    "createdDate": "2023-01-15",
+    "totalBilled": 15000
+  },
+  {
+    "id": 2,
+    "name": "Robert & Mary Wilson",
+    "email": "rwilson@email.com",
+    "phone": "+61 400 234 567",
+    "status": "Active",
+    "contactPerson": "Robert Wilson",
+    "createdDate": "2023-03-22",
+    "totalBilled": 8000
+  },
+  {
+    "id": 3,
+    "name": "ABC Corporation",
+    "email": "legal@abccorp.com",
+    "phone": "+61 2 9876 5432",
+    "status": "Active",
+    "contactPerson": "Sarah Mitchell",
+    "createdDate": "2022-11-08",
+    "totalBilled": 125000
+  },
+  {
+    "id": 4,
+    "name": "TechStart Inc",
+    "email": "legal@techstart.com",
+    "phone": "+61 3 8765 4321",
+    "status": "Active",
+    "contactPerson": "Michael Zhang",
+    "createdDate": "2023-06-10",
+    "totalBilled": 25000
+  },
+  {
+    "id": 5,
+    "name": "Green Energy Solutions",
+    "email": "contact@greenenergy.com.au",
+    "phone": "+61 7 5432 1098",
+    "status": "Prospect",
+    "contactPerson": "Lisa Chen",
+    "createdDate": "2024-01-05",
+    "totalBilled": 0
+  }
+]

@@ -1,0 +1,134 @@
+[
+  {
+    "id": 1,
+    "name": "Property Purchase - 123 Main St",
+    "client": {
+      "name": "John Smith",
+      "email": "john@email.com"
+    },
+    "status": "Open",
+    "priority": "High",
+    "coordinator": {
+      "name": "Sarah Johnson",
+      "initials": "SJ",
+      "email": "sarah@alp.com"
+    },
+    "progress": {
+      "completed": 7,
+      "total": 12
+    },
+    "estimatedBudget": 15000,
+    "actualCosts": 8500,
+    "dueDate": "2024-02-15",
+    "offerings": [
+      {
+        "name": "Property Purchase",
+        "color": "blue"
+      },
+      {
+        "name": "Mortgage Assistance",
+        "color": "green"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Estate Planning - Wilson Family",
+    "client": {
+      "name": "Robert & Mary Wilson",
+      "email": "rwilson@email.com"
+    },
+    "status": "On Hold",
+    "priority": "Medium",
+    "coordinator": {
+      "name": "Michael Chen",
+      "initials": "MC",
+      "email": "michael@alp.com"
+    },
+    "progress": {
+      "completed": 3,
+      "total": 8
+    },
+    "estimatedBudget": 8000,
+    "actualCosts": 2100,
+    "dueDate": "2024-03-20",
+    "offerings": [
+      {
+        "name": "Will Preparation",
+        "color": "purple"
+      },
+      {
+        "name": "Trust Setup",
+        "color": "orange"
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "name": "Urgent Litigation - ABC Corp vs XYZ Ltd",
+    "client": {
+      "name": "ABC Corporation",
+      "email": "legal@abccorp.com"
+    },
+    "status": "Open",
+    "priority": "Urgent",
+    "coordinator": {
+      "name": "Emma Thompson",
+      "initials": "ET",
+      "email": "emma@alp.com"
+    },
+    "progress": {
+      "completed": 2,
+      "total": 15
+    },
+    "estimatedBudget": 50000,
+    "actualCosts": 47500,
+    "dueDate": "2024-01-30",
+    "offerings": [
+      {
+        "name": "Commercial Litigation",
+        "color": "red"
+      },
+      {
+        "name": "Contract Dispute",
+        "color": "pink"
+      },
+      {
+        "name": "Emergency Injunction",
+        "color": "indigo"
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "name": "Corporate Restructure - TechStart Inc",
+    "client": {
+      "name": "TechStart Inc",
+      "email": "legal@techstart.com"
+    },
+    "status": "Open",
+    "priority": "Medium",
+    "coordinator": {
+      "name": "David Wilson",
+      "initials": "DW",
+      "email": "david@alp.com"
+    },
+    "progress": {
+      "completed": 5,
+      "total": 10
+    },
+    "estimatedBudget": 25000,
+    "actualCosts": 12000,
+    "dueDate": "2024-04-15",
+    "offerings": [
+      {
+        "name": "Corporate Law",
+        "color": "teal"
+      },
+      {
+        "name": "Business Restructure",
+        "color": "blue"
+      }
+    ]
+  }
+]
