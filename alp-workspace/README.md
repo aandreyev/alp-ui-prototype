@@ -4,7 +4,7 @@ This workspace is designed specifically for prototyping components that will int
 
 ## Purpose
 
-Unlike the general prototype playground, this workspace:
+This workspace:
 - Mirrors ALP's actual codebase structure and patterns
 - Uses ALP's real data structures and field names
 - Follows ALP's existing CSS classes and styling conventions

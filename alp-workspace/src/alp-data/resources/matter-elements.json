@@ -1,0 +1,77 @@
+[
+  {
+    "id": "matter-outcome-001",
+    "matterId": "matter-123",
+    "type": "outcome",
+    "name": "Understanding your rights and deciding the best claim to make",
+    "description": "Initial assessment and rights analysis for unfair dismissal claims",
+    "sequence": 1,
+    "linkedOfferingElementId": "offering-outcome-001",
+    "createdAt": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": "matter-component-001",
+    "matterId": "matter-123",
+    "type": "component",
+    "name": "Understanding your position and providing you with high-level guidance",
+    "description": "Initial position analysis and high-level guidance provision",
+    "parentId": "matter-outcome-001",
+    "sequence": 1,
+    "linkedOfferingElementId": "offering-component-001",
+    "createdAt": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": "matter-component-002",
+    "matterId": "matter-123",
+    "type": "component",
+    "name": "Providing you with our written advice",
+    "description": "Formal written advice delivery",
+    "parentId": "matter-outcome-001",
+    "sequence": 2,
+    "linkedOfferingElementId": "offering-component-002",
+    "createdAt": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": "matter-outcome-002",
+    "matterId": "matter-123",
+    "type": "outcome",
+    "name": "Bringing a formal complaint against your employer",
+    "description": "Formal complaint process and negotiation",
+    "sequence": 2,
+    "linkedOfferingElementId": "offering-outcome-002",
+    "createdAt": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": "matter-component-003",
+    "matterId": "matter-123",
+    "type": "component",
+    "name": "Preparing and lodging your claim",
+    "description": "FWC application preparation and lodgement",
+    "parentId": "matter-outcome-002",
+    "sequence": 1,
+    "linkedOfferingElementId": "offering-component-003",
+    "createdAt": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": "matter-component-004",
+    "matterId": "matter-123",
+    "type": "component",
+    "name": "Negotiating with your employer",
+    "description": "Negotiation process management",
+    "parentId": "matter-outcome-002",
+    "sequence": 2,
+    "linkedOfferingElementId": "offering-component-004",
+    "createdAt": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": "matter-component-005",
+    "matterId": "matter-123",
+    "type": "component",
+    "name": "Entering a Settlement Deed",
+    "description": "Settlement documentation and completion",
+    "parentId": "matter-outcome-002",
+    "sequence": 3,
+    "linkedOfferingElementId": "offering-component-005",
+    "createdAt": "2024-01-01T00:00:00Z"
+  }
+]
