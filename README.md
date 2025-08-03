@@ -1,43 +1,39 @@
 # ALP UI Prototype Environment
 
-A comprehensive prototyping environment for building and testing UI components for the Australian Legal Practice (ALP) system.
+A comprehensive prototyping environment for building and testing UI components for the Australian Legal Practice (ALP) system following the [ALP Prototyping Methodology](./ALP_PROTOTYPING_METHODOLOGY.md).
 
 ## 🎯 Overview
 
-This repository contains two distinct workspaces:
+This repository provides a single, focused workspace for developing production-ready ALP components that integrate seamlessly with ALP's existing .NET Core system. All component development follows the proven four-phase methodology established through the Portal Resources project.
 
-1. **General Prototype Playground** (`/prototype/`) - Modern Vue 3 + TypeScript environment for UI exploration
-2. **ALP-Specific Workspace** (`/alp-workspace/`) - Production-ready components that integrate with ALP's .NET Core system
+### 🚀 Quick Start
 
-## 🚀 Quick Start
-
-### General Prototype Playground
 ```bash
-cd prototype
+cd alp-workspace
 npm install
-npm run prototype
+npm run dev
 ```
-Visit `http://localhost:5173` to see the interactive prototype playground.
 
-### ALP-Specific Development
-See `/alp-workspace/SETUP.md` for detailed setup instructions for building production-ready ALP components.
+Visit `http://localhost:8081` to access the component testing environment.
+
+### 📋 Methodology
+
+All component development follows the **[ALP Prototyping Methodology](./ALP_PROTOTYPING_METHODOLOGY.md)**:
+1. **Discovery & Analysis** - Business requirements and system analysis
+2. **Design & Planning** - Architecture and UX design
+3. **Implementation** - Production-ready component development
+4. **Validation & Refinement** - Testing and stakeholder approval
 
 ## 📁 Project Structure
 
 ```
-├── prototype/                    # General prototyping environment
-│   ├── src/
-│   │   ├── components/          # Vue components organized by type
-│   │   ├── data/               # JSON sample data
-│   │   ├── composables/        # Vue composables for data management
-│   │   └── types/              # TypeScript type definitions
-│   └── package.json
 ├── alp-workspace/               # ALP-specific development workspace
 │   ├── src/
-│   │   ├── alp-components/     # Components matching ALP's structure
+│   │   ├── components/business/resources/ # Our resource components
+│   │   ├── lib/registry/new-york/ui/      # ALP's shadcn/ui components  
 │   │   ├── alp-data/          # Sample data matching ALP's schema
 │   │   ├── alp-types/         # TypeScript interfaces for ALP
-│   │   └── alp-styles/        # ALP's actual CSS classes
+│   │   └── test/              # Vue component testing environment
 │   └── documentation/          # ALP integration guides
 ├── documentation/              # General ALP documentation
 └── WORKFLOW.md                # Development workflow guide
@@ -45,9 +41,10 @@ See `/alp-workspace/SETUP.md` for detailed setup instructions for building produ
 
 ## 🛠️ Technology Stack
 
-### General Prototype
+### ALP-Workspace 
 - **Frontend**: Vue 3 + TypeScript + Vite
-- **Styling**: Tailwind CSS + shadcn/ui components
+- **UI Components**: ALP's actual shadcn/ui (New York variant)
+- **Styling**: Tailwind CSS with ALP's configuration
 - **State Management**: Pinia
 - **Development**: Hot reload, component testing
 
@@ -59,52 +56,33 @@ See `/alp-workspace/SETUP.md` for detailed setup instructions for building produ
 
 ## 📚 Documentation
 
-- **[WORKFLOW.md](./WORKFLOW.md)** - Complete development workflow
-- **[ALP Workspace Setup](./alp-workspace/SETUP.md)** - ALP-specific development guide
+- **[ALP Prototyping Methodology](./ALP_PROTOTYPING_METHODOLOGY.md)** - Complete four-phase development methodology
+- **[ALP Workspace Setup](./alp-workspace/SETUP.md)** - Development environment setup guide
 - **[Integration Guide](./alp-workspace/documentation/integration-guide.md)** - Production deployment guide
-- **[Component Templates](./prototype/src/components/COMPONENT_TEMPLATE.md)** - Component development standards
+- **[Component Documentation](./alp-workspace/src/components/business/)** - Component-specific documentation
 
 ## 🎨 Features
 
-### General Prototype Playground
-- ✅ Interactive component testing environment
-- ✅ Live component variants and state testing
-- ✅ JSON-based sample data management
-- ✅ TypeScript type safety
-- ✅ Hot reload development
-- ✅ Component documentation system
-
-### ALP-Specific Workspace
-- ✅ .NET Core ViewComponent integration patterns
-- ✅ Entity Framework model compatibility
-- ✅ ALP database schema alignment
-- ✅ Production-ready component architecture
-- ✅ Integration testing framework
-- ✅ Deployment guides and checklists
+### Production-Ready Component Development
+- ✅ **Four-Phase Methodology** - Structured approach from discovery to validation
+- ✅ **ALP Integration Patterns** - Seamless integration with existing ALP systems
+- ✅ **Component Testing Environment** - Step-by-step validation infrastructure
+- ✅ **shadcn/ui Integration** - Uses ALP's exact UI component library
+- ✅ **TypeScript Safety** - Complete type coverage for all data structures
+- ✅ **Realistic Test Data** - JSON data matching ALP's database schema
 
 ## 🔧 Development Workflow
 
-### For UI Exploration
-1. Use the general prototype playground
-2. Build and test components interactively
-3. Iterate on design and functionality
-4. Document component specifications
+### Following the ALP Prototyping Methodology
+1. **Phase 1: Discovery & Analysis** - Document business requirements and analyze existing systems
+2. **Phase 2: Design & Planning** - Create component architecture and user experience designs
+3. **Phase 3: Implementation** - Build production-ready components in `/alp-workspace/`
+4. **Phase 4: Validation & Refinement** - Test with stakeholders and refine based on feedback
 
-### For ALP Production Components
-1. Load ALP documentation into `/alp-workspace/documentation/`
-2. Create components following ALP's patterns
-3. Test with ALP's actual data structures
-4. Deploy using integration guides
-
-## 📊 Sample Data
-
-The environment includes comprehensive sample data:
-- **Legal Matters** with realistic case information
-- **Client Records** with contact and billing data
-- **Time Entries** and billing information
-- **Invoice Data** with financial calculations
-
-All sample data follows ALP's actual database schema and business logic.
+### Project Organization
+- **Project Documentation**: `/projects/[project-name]/` - Four-phase documentation structure
+- **Component Implementation**: `/alp-workspace/src/components/business/[project]/` - Production code
+- **Testing Environment**: `/alp-workspace/src/test/` - Component validation tools
 
 ## 🚀 Getting Started
 
@@ -114,25 +92,25 @@ All sample data follows ALP's actual database schema and business logic.
    cd alp-ui-prototype
    ```
 
-2. **For general prototyping:**
+2. **Set up the development environment**
    ```bash
-   cd prototype
+   cd alp-workspace
    npm install
-   npm run prototype
+   npm run dev
    ```
 
-3. **For ALP-specific development:**
-   - Review `/alp-workspace/README.md`
-   - Follow setup guide in `/alp-workspace/SETUP.md`
-   - Load ALP documentation as needed
+3. **Follow the methodology**
+   - Review the [ALP Prototyping Methodology](./ALP_PROTOTYPING_METHODOLOGY.md)
+   - Create project documentation in `/projects/[your-project]/`
+   - Implement components following ALP patterns
 
 ## 🤝 Contributing
 
-1. Follow the component template structure
-2. Update documentation for new components
-3. Test components in both environments as appropriate
-4. Follow TypeScript best practices
-5. Maintain compatibility with ALP's existing systems
+1. **Follow the ALP Prototyping Methodology** for all new component development
+2. **Use existing ALP patterns** - never create custom UI components when ALP has existing ones
+3. **Test with real Vue components** - build actual component testing, not HTML demos
+4. **Document decisions immediately** while context is fresh
+5. **Maintain ALP compatibility** with existing systems and patterns
 
 ## 📝 License
 
