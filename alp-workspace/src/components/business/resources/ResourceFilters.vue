@@ -20,21 +20,7 @@
             </Select>
           </div>
           
-          <!-- Level Filter -->
-          <div class="flex items-center gap-2">
-            <label class="text-sm font-medium">Level:</label>
-            <Select v-model="localFilters.level">
-              <SelectTrigger class="w-32">
-                <SelectValue placeholder="All Levels" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Levels</SelectItem>
-                <SelectItem value="offering">Offering</SelectItem>
-                <SelectItem value="outcome">Outcome</SelectItem>
-                <SelectItem value="component">Component</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+
           
           <!-- Search -->
           <div class="flex items-center gap-2 flex-1">
@@ -107,7 +93,6 @@ const localFilters = computed({
 // Computed properties
 const hasActiveFilters = computed(() => {
   return localFilters.value.type !== 'all' || 
-         localFilters.value.level !== 'all' || 
          localFilters.value.search !== ''
 })
 
@@ -115,7 +100,6 @@ const hasActiveFilters = computed(() => {
 const clearFilters = () => {
   localFilters.value = {
     type: 'all',
-    level: 'all', 
     search: ''
   }
 }

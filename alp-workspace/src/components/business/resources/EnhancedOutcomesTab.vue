@@ -1,19 +1,20 @@
 <template>
   <div class="enhanced-outcomes-tab">
-    <!-- Search and Actions Header -->
-    <div class="flex items-center justify-between mb-6">
-      <div class="relative flex-1 max-w-md">
-        <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-        <Input
-          v-model="searchQuery"
-          placeholder="Search ..."
-          class="pl-10"
-        />
+    <!-- Filters and Actions Header -->
+    <div class="space-y-4 mb-6">
+      <!-- Actions -->
+      <div class="flex justify-end">
+        <Button>
+          <Plus class="h-4 w-4 mr-2" />
+          Add Outcome
+        </Button>
       </div>
-      <Button class="ml-4">
-        <Plus class="h-4 w-4 mr-2" />
-        Add Outcome
-      </Button>
+      
+      <!-- Resource Filters -->
+      <ResourceFilters 
+        v-model="filterState"
+        :total-resources="totalResourceCount"
+      />
     </div>
 
     <!-- Offerings with Outcomes -->
@@ -43,6 +44,21 @@
           </Button>
         </div>
 
+        <!-- Offering-Level Resources -->
+        <div v-if="offering.resources && offering.resources.length > 0" class="offering-resources-section">
+          <h4 class="offering-resources-title">Offering Resources</h4>
+          <div class="offering-resources-container">
+            <ResourceSummary
+              v-for="resource in offering.resources"
+              :key="resource.id"
+              :resource="resource"
+              :actions="['preview', 'open']"
+              @click="openResourceDetail"
+              @action="handleResourceAction"
+            />
+          </div>
+        </div>
+
         <!-- Outcomes within Offering -->
         <div class="outcomes-container">
           <div
@@ -55,34 +71,14 @@
 
             <!-- Outcome-Level Resources -->
             <div v-if="outcome.resources.length > 0" class="resources-section">
-              <div
+              <ResourceSummary
                 v-for="resource in outcome.resources"
                 :key="resource.id"
-                class="resource-item"
-              >
-                <div class="flex items-center justify-between">
-                  <div class="flex items-center space-x-3">
-                    <component :is="getResourceIcon(resource.type)" class="resource-icon" />
-                    <span class="resource-name">{{ resource.name }}</span>
-                  </div>
-                  <div class="resource-actions">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      @click="openResourceDetail(resource)"
-                    >
-                      Detail
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      @click="openResource(resource)"
-                    >
-                      Open
-                    </Button>
-                  </div>
-                </div>
-              </div>
+                :resource="resource"
+                :actions="['preview', 'open']"
+                @click="openResourceDetail"
+                @action="handleResourceAction"
+              />
             </div>
 
             <!-- Components within Outcome -->
@@ -138,34 +134,14 @@
 
                 <!-- Component-Level Resources -->
                 <div v-if="component.resources.length > 0" class="component-resources-container">
-                  <div
+                  <ResourceSummary
                     v-for="resource in component.resources"
                     :key="resource.id"
-                    class="component-resource-box"
-                  >
-                    <div class="flex items-center justify-between">
-                      <div class="flex items-center space-x-3">
-                        <component :is="getResourceIcon(resource.type)" class="resource-icon" />
-                        <span class="resource-name">{{ resource.name }}</span>
-                      </div>
-                      <div class="resource-actions">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          @click="openResourceDetail(resource)"
-                        >
-                          Detail
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          @click="openResource(resource)"
-                        >
-                          Open
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
+                    :resource="resource"
+                    :actions="['preview', 'open']"
+                    @click="openResourceDetail"
+                    @action="handleResourceAction"
+                  />
                 </div>
               </div>
             </div>
@@ -198,24 +174,24 @@ import { Button } from '@/lib/registry/new-york/ui/button'
 import { Input } from '@/lib/registry/new-york/ui/input'
 import { Checkbox } from '@/lib/registry/new-york/ui/checkbox'
 import { 
-  Search, 
   Plus, 
   Folder, 
   Play, 
-  Trash2,
-  FileText,
-  Link
+  Trash2
 } from 'lucide-vue-next'
 import ComponentResourcesModal from './ComponentResourcesModal.vue'
 import ResourceDetailModal from './ResourceDetailModal.vue'
 import ResourceCard from './ResourceCard.vue'
-import type { Resource, ResourceMetadata } from '@/alp-types/resources.types'
+import ResourceFilters from './ResourceFilters.vue'
+import ResourceSummary from './ResourceSummary.vue'
+import type { Resource, ResourceMetadata, ResourceFilterState } from '@/alp-types/resources.types'
 
 // Enhanced interfaces for the outcomes tab
 interface EnhancedOffering {
   id: string
   name: string
   sharePointUrl: string
+  resources?: Resource[]
   outcomes: EnhancedOutcome[]
 }
 
@@ -246,7 +222,10 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 // Reactive state
-const searchQuery = ref('')
+const filterState = ref<ResourceFilterState>({
+  type: 'all',
+  search: ''
+})
 const selectedComponent = ref<EnhancedComponent | null>(null)
 const componentModalVisible = ref(false)
 const selectedResource = ref<Resource | null>(null)
@@ -258,6 +237,38 @@ const offerings = ref<EnhancedOffering[]>([
     id: 'offering-1',
     name: 'Make a claim for unfair dismissal',
     sharePointUrl: 'https://sharepoint.example.com/unfair-dismissal',
+    resources: [
+      {
+        id: 'offering-resource-1',
+        name: 'Unfair Dismissal Overview',
+        description: 'Complete overview of unfair dismissal laws, procedures, and your rights as an employee. Essential reading before proceeding with any claim.',
+        type: 'document',
+        url: '/documents/unfair-dismissal-overview.pdf',
+        metadata: {
+          author: 'Employment Law Team',
+          version: 'v3.0',
+          lastModified: '2024-01-20',
+          tags: ['unfair dismissal', 'overview', 'employee rights']
+        },
+        createdAt: '2024-01-10T00:00:00Z',
+        updatedAt: '2024-01-20T00:00:00Z'
+      },
+      {
+        id: 'offering-resource-2',
+        name: 'Initial Assessment Checklist',
+        description: 'Pre-screening checklist to determine if you have grounds for an unfair dismissal claim. Complete this before booking a consultation.',
+        type: 'form',
+        url: '/forms/initial-assessment',
+        metadata: {
+          author: 'Legal Assessment Team',
+          version: 'v2.5',
+          lastModified: '2024-01-18',
+          tags: ['assessment', 'checklist', 'pre-screening']
+        },
+        createdAt: '2024-01-05T00:00:00Z',
+        updatedAt: '2024-01-18T00:00:00Z'
+      }
+    ],
     outcomes: [
       {
         id: 'outcome-1',
@@ -532,34 +543,67 @@ const offerings = ref<EnhancedOffering[]>([
 ])
 
 // Computed properties
+const totalResourceCount = computed(() => {
+  return offerings.value.reduce((total, offering) => {
+    const offeringResources = offering.resources?.length || 0
+    const outcomeResources = offering.outcomes.reduce((outcomeTotal, outcome) => {
+      const outcomeResourceCount = outcome.resources?.length || 0
+      const componentResources = outcome.components.reduce((compTotal, component) => 
+        compTotal + (component.resources?.length || 0), 0)
+      return outcomeTotal + outcomeResourceCount + componentResources
+    }, 0)
+    return total + offeringResources + outcomeResources
+  }, 0)
+})
+
 const filteredOfferings = computed(() => {
-  if (!searchQuery.value) return offerings.value
-  
-  return offerings.value.filter(offering => 
-    offering.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-    offering.outcomes.some(outcome => 
-      outcome.title.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-      outcome.components.some(component =>
-        component.title.toLowerCase().includes(searchQuery.value.toLowerCase())
+  return offerings.value.map(offering => ({
+    ...offering,
+    resources: filterResources(offering.resources || []),
+    outcomes: offering.outcomes.map(outcome => ({
+      ...outcome,
+      resources: filterResources(outcome.resources || []),
+      components: outcome.components.map(component => ({
+        ...component,
+        resources: filterResources(component.resources || [])
+      })).filter(component => 
+        // Show component if it has filtered resources or if no search is applied
+        component.resources.length > 0 || filterState.value.search === ''
       )
+    })).filter(outcome =>
+      // Show outcome if it has filtered resources, filtered components, or if no search is applied
+      (outcome.resources?.length || 0) > 0 || 
+      outcome.components.length > 0 ||
+      filterState.value.search === ''
     )
+  })).filter(offering =>
+    // Show offering if it has filtered resources, filtered outcomes, or if no search is applied  
+    (offering.resources?.length || 0) > 0 || 
+    offering.outcomes.length > 0 || 
+    filterState.value.search === ''
   )
 })
 
-// Methods
-const getResourceIcon = (type: string) => {
-  switch (type) {
-    case 'form':
-    case 'template':
-      return FileText
-    case 'document':
-      return FileText
-    case 'url':
-      return Link
-    default:
-      return FileText
-  }
+const filterResources = (resources: Resource[]): Resource[] => {
+  return resources.filter(resource => {
+    // Filter by type
+    if (filterState.value.type !== 'all' && resource.type !== filterState.value.type) {
+      return false
+    }
+    
+    // Filter by search
+    if (filterState.value.search) {
+      const searchLower = filterState.value.search.toLowerCase()
+      return resource.name.toLowerCase().includes(searchLower) ||
+             resource.description?.toLowerCase().includes(searchLower) ||
+             resource.metadata?.tags?.some(tag => tag.toLowerCase().includes(searchLower))
+    }
+    
+    return true
+  })
 }
+
+// Methods
 
 const openSharePointFolder = (url: string) => {
   window.open(url, '_blank')
@@ -647,29 +691,45 @@ const handleResourceDetailAction = (action: string, resource: Resource) => {
 
 <style scoped>
 .enhanced-outcomes-tab {
-  @apply p-6;
+  @apply p-6 bg-gray-50 min-h-screen;
 }
 
-/* Level 1: Offering Container - Lightest shade */
+/* Level 1: Offering Container - Major Section with Blue Accent */
 .offering-container {
-  @apply border-2 border-gray-300 rounded-lg p-4 bg-gray-50 shadow-sm;
+  @apply border border-gray-200 rounded-lg p-6 bg-white shadow-md border-l-4 border-l-blue-500 mb-6;
 }
 
 .offering-header {
   @apply flex items-center justify-between mb-4 pb-3 border-b border-gray-200;
 }
 
-.outcomes-container {
-  @apply space-y-4;
+.offering-header button {
+  @apply text-xl font-bold text-gray-900 hover:text-blue-600 transition-colors;
 }
 
-/* Level 2: Outcome Container - Medium shade */
+.offering-resources-section {
+  @apply mb-6;
+}
+
+.offering-resources-title {
+  @apply text-base font-semibold text-gray-800 mb-3;
+}
+
+.offering-resources-container {
+  @apply space-y-2;
+}
+
+.outcomes-container {
+  @apply space-y-5;
+}
+
+/* Level 2: Outcome Container - Organized Groups */
 .outcome-container {
-  @apply border border-gray-300 rounded-md p-4 bg-gray-100 shadow-sm;
+  @apply border border-gray-200 rounded-md p-5 bg-slate-50 shadow-sm mb-4;
 }
 
 .outcome-title {
-  @apply text-lg font-semibold text-gray-900 mb-4;
+  @apply text-lg font-bold text-gray-800 mb-4;
 }
 
 .resources-section {
@@ -698,24 +758,24 @@ const handleResourceDetailAction = (action: string, resource: Resource) => {
 }
 
 .components-section {
-  @apply space-y-3;
+  @apply space-y-4;
 }
 
-/* Level 3: Component Container - Darker shade, encompasses resources */
+/* Level 3: Component Container - Clean Workspace Areas */
 .component-container {
-  @apply border border-gray-400 rounded-md p-3 bg-gray-200 shadow-sm;
+  @apply border border-gray-300 rounded-md p-4 bg-white shadow-sm hover:shadow-md transition-shadow mb-3;
 }
 
 .component-header {
-  @apply flex items-center justify-between p-2 bg-white rounded border border-gray-200 mb-3;
+  @apply flex items-center justify-between p-3 bg-gray-50 rounded border border-gray-200 mb-3;
 }
 
 .component-title {
-  @apply text-base font-medium text-gray-900;
+  @apply text-base font-semibold text-gray-900;
 }
 
 .component-title-button {
-  @apply text-left hover:text-blue-600 hover:underline transition-colors cursor-pointer;
+  @apply text-left hover:text-blue-600 hover:underline transition-all cursor-pointer hover:bg-blue-50 rounded px-2 py-1 -mx-2 -my-1;
 }
 
 /* Level 4: Component Resources Container */

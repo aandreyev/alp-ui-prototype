@@ -126,7 +126,7 @@
     </div>
 
     <!-- Video Information -->
-    <div class="grid grid-cols-2 gap-4">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
       <div>
         <label class="text-sm font-medium text-foreground">Duration (seconds)</label>
         <Input 
@@ -135,6 +135,7 @@
           @input="updateField('duration', parseInt($event.target.value) || 0)"
           placeholder="300"
           min="0"
+          class="w-28"
         />
       </div>
       
@@ -144,7 +145,7 @@
           :value="modelValue.videoType || 'training'"
           @update:value="updateField('videoType', $event)"
         >
-          <SelectTrigger>
+          <SelectTrigger class="w-36">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -157,23 +158,41 @@
           </SelectContent>
         </Select>
       </div>
-    </div>
 
-    <!-- Video Metadata -->
-    <div class="grid grid-cols-2 gap-4">
       <div>
         <label class="text-sm font-medium text-foreground">Difficulty Level</label>
         <Select 
           :value="modelValue.difficulty || 'beginner'"
           @update:value="updateField('difficulty', $event)"
         >
-          <SelectTrigger>
+          <SelectTrigger class="w-32">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="beginner">Beginner</SelectItem>
             <SelectItem value="intermediate">Intermediate</SelectItem>
             <SelectItem value="advanced">Advanced</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+    </div>
+
+    <!-- Video Metadata -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <label class="text-sm font-medium text-foreground">Resolution/Quality</label>
+        <Select 
+          :value="modelValue.resolution || '1080p'"
+          @update:value="updateField('resolution', $event)"
+        >
+          <SelectTrigger class="w-24">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="720p">720p HD</SelectItem>
+            <SelectItem value="1080p">1080p Full HD</SelectItem>
+            <SelectItem value="1440p">1440p QHD</SelectItem>
+            <SelectItem value="4k">4K UHD</SelectItem>
           </SelectContent>
         </Select>
       </div>

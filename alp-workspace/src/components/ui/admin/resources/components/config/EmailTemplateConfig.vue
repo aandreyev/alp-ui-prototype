@@ -14,37 +14,26 @@
       </p>
     </div>
 
-    <!-- Template Type and Category -->
-    <div class="grid grid-cols-2 gap-4">
-      <div>
-        <label class="text-sm font-medium text-foreground">Template Type</label>
-        <Select 
-          :value="modelValue.templateType || 'notification'"
-          @update:value="updateField('templateType', $event)"
-        >
-          <SelectTrigger>
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="notification">Notification</SelectItem>
-            <SelectItem value="marketing">Marketing</SelectItem>
-            <SelectItem value="legal">Legal</SelectItem>
-            <SelectItem value="system">System</SelectItem>
-            <SelectItem value="welcome">Welcome</SelectItem>
-            <SelectItem value="reminder">Reminder</SelectItem>
-            <SelectItem value="other">Other</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-      
-      <div>
-        <label class="text-sm font-medium text-foreground">Offering Category</label>
-        <Input 
-          :value="modelValue.offeringCategory || ''"
-          @input="updateField('offeringCategory', $event.target.value)"
-          placeholder="e.g., Legal Services"
-        />
-      </div>
+    <!-- Template Type -->
+    <div>
+      <label class="text-sm font-medium text-foreground">Template Type</label>
+      <Select 
+        :value="modelValue.templateType || 'notification'"
+        @update:value="updateField('templateType', $event)"
+      >
+        <SelectTrigger class="w-44">
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="notification">Notification</SelectItem>
+          <SelectItem value="marketing">Marketing</SelectItem>
+          <SelectItem value="legal">Legal</SelectItem>
+          <SelectItem value="system">System</SelectItem>
+          <SelectItem value="welcome">Welcome</SelectItem>
+          <SelectItem value="reminder">Reminder</SelectItem>
+          <SelectItem value="other">Other</SelectItem>
+        </SelectContent>
+      </Select>
     </div>
 
     <!-- Email Content -->

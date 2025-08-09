@@ -1,6 +1,6 @@
 <template>
-  <Sheet :open="isOpen" @update:open="handleClose">
-    <SheetContent side="right" class="w-[600px] sm:w-[800px] max-w-[90vw] overflow-hidden flex flex-col">
+  <Sheet :open="isOpen" @update:open="$emit('close')">
+    <SheetContent side="right" class="overflow-hidden flex flex-col" style="width: 1400px; max-width: 80vw;">
       <SheetHeader>
         <div class="flex items-center gap-3">
           <component :is="config?.icon" class="w-5 h-5" />
@@ -29,7 +29,7 @@
       </Alert>
 
       <!-- Scrollable Content -->
-      <div class="flex-1 overflow-y-auto py-4 space-y-6">
+      <div class="flex-1 overflow-y-auto p-4 space-y-6">
         <!-- Resource Information Panel -->
         <div class="bg-muted/50 rounded-lg p-4">
           <h3 class="text-sm font-medium text-foreground mb-3">Resource Information</h3>
@@ -54,42 +54,43 @@
         </div>
 
         <!-- Common Fields -->
-        <div class="grid grid-cols-1 gap-4">
-          <div>
-            <label class="text-sm font-medium text-foreground">
+        <div class="space-y-4">
+
+          <div class="space-y-2">
+            <label for="name" class="text-sm font-medium text-foreground">
               Name *
             </label>
             <Input
               id="name"
-              :value="editableResource?.name || ''"
-              @input="updateField('name', $event.target.value)"
+              v-model="editableResource.name"
               placeholder="Enter resource name"
               :class="hasFieldError('name') ? 'border-destructive' : ''"
+              @input="markDirty"
             />
-            <p v-if="hasFieldError('name')" class="text-sm text-destructive mt-1">
+            <p v-if="hasFieldError('name')" class="text-sm text-destructive">
               {{ getFieldError('name') }}
             </p>
           </div>
           
-          <div>
-            <label class="text-sm font-medium text-foreground">
+          <div class="space-y-2">
+            <label for="description" class="text-sm font-medium text-foreground">
               Description
             </label>
             <Textarea 
               id="description"
-              :value="editableResource?.description || ''"
-              @input="updateField('description', $event.target.value)"
+              v-model="editableResource.description"
               placeholder="Enter resource description"
               rows="3"
               :class="hasFieldError('description') ? 'border-destructive' : ''"
+              @input="markDirty"
             />
-            <p v-if="hasFieldError('description')" class="text-sm text-destructive mt-1">
+            <p v-if="hasFieldError('description')" class="text-sm text-destructive">
               {{ getFieldError('description') }}
             </p>
           </div>
           
-          <div>
-            <label class="text-sm font-medium text-foreground">
+          <div class="space-y-2">
+            <label for="tags" class="text-sm font-medium text-foreground">
               Tags
             </label>
             <TagInput 
@@ -117,15 +118,16 @@
         <Separator />
         <div>
           <h3 class="text-sm font-medium text-foreground mb-3">Settings</h3>
-          <div class="grid grid-cols-1 gap-4">
-            <div>
-              <label class="text-sm font-medium text-foreground">
+          <div class="space-y-4">
+            <div class="space-y-2">
+              <label for="access-level" class="text-sm font-medium text-foreground">
                 Access Level
               </label>
               <select 
+                id="access-level"
                 :value="(editableResource?.metadata as any)?.accessLevel || 'public'"
                 @change="updateField('metadata.accessLevel', $event.target.value)"
-                class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                class="w-full border border-input rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring bg-background"
               >
                 <option value="public">Public</option>
                 <option value="restricted">Restricted</option>
@@ -139,7 +141,7 @@
       <!-- Footer with Actions -->
       <SheetFooter class="border-t pt-4">
         <div class="flex justify-between w-full">
-          <Button variant="outline" @click="handleClose">
+          <Button variant="outline" @click="$emit('close')">
             Cancel
           </Button>
           <div class="flex gap-2">
@@ -268,19 +270,11 @@ function openEdit(resource: Resource) {
   isDirty.value = false
 }
 
-// Close modal
-async function close(): Promise<boolean> {
-  if (isDirty.value) {
-    const confirmed = window.confirm('You have unsaved changes. Are you sure you want to close?')
-    if (!confirmed) return false
-  }
-  
-  mode.value = 'edit'
-  originalResource.value = null
-  editableResource.value = null
-  error.value = null
-  isDirty.value = false
-  return true
+
+
+// Mark form as dirty
+function markDirty() {
+  isDirty.value = true
 }
 
 // Update field
@@ -297,46 +291,18 @@ function updateField(field: string, value: any) {
     editableResource.value[field] = value
   }
   
-  isDirty.value = true
+  markDirty()
 }
 
-// Save resource
-async function save(): Promise<boolean> {
+// Simple save for prototype
+function save(): boolean {
   if (!editableResource.value) return false
   
-  try {
-    saving.value = true
-    error.value = null
-    
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    
-    // Create simple resource object for demo
-    const savedResource = {
-      id: originalResource.value!.id,
-      ...editableResource.value,
-      metadata: {
-        ...editableResource.value.metadata,
-        name: editableResource.value.name,
-        lastModified: new Date()
-      }
-    }
-    
-    emit('updated', savedResource)
-    
-    // Reset state
-    originalResource.value = null
-    editableResource.value = null
-    isDirty.value = false
-    
-    return true
-  } catch (err) {
-    const message = err instanceof Error ? err.message : 'Failed to save resource'
-    error.value = message
-    return false
-  } finally {
-    saving.value = false
-  }
+  // Just emit the updated resource and return success
+  emit('updated', editableResource.value)
+  isDirty.value = false
+  
+  return true
 }
 
 // Use validation composable
@@ -346,23 +312,15 @@ const {
   getFieldError
 } = useResourceValidation()
 
-/**
- * Handle drawer close with confirmation if dirty
- */
-async function handleClose() {
-  const closed = await close()
-  if (closed) {
-    emit('close')
-  }
-}
+
 
 /**
  * Handle save operation
  */
-async function handleSave() {
-  const success = await save()
+function handleSave() {
+  const success = save()
   if (success) {
-    // Drawer will close automatically via onSuccess callback
+    emit('close')
   }
 }
 
@@ -403,6 +361,8 @@ watch(() => props.isOpen, (isOpen) => {
     openEdit(props.resource)
   }
 })
+
+
 </script>
 
 <style scoped>

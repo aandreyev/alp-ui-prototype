@@ -81,7 +81,6 @@ export interface OfferingWithResources {
 // Filter and Display Types
 export interface ResourceFilterState {
   type: ResourceType | 'all'
-  level: 'offering' | 'outcome' | 'component' | 'all'
   search: string
 }
 

@@ -1,0 +1,237 @@
+{
+  "offerings": [
+    {
+      "id": "offering-1",
+      "name": "License your software (licensor)",
+      "description": "Protect and exploit your intellectual property (IP)",
+      "category": "Intellectual Property",
+      "sharePointUrl": "https://sharepoint.example.com/licensing",
+      "resourceCount": 2,
+      "associatedResources": [
+        {
+          "id": "offering-resource-1",
+          "name": "Offering Overview.docx",
+          "description": "Complete overview of the licensing offering including legal framework and process steps",
+          "type": "document",
+          "url": "/documents/offering-overview.docx",
+          "metadata": {
+            "author": "Legal Team",
+            "version": "v2.1",
+            "lastModified": "2024-01-20",
+            "tags": ["overview", "licensing", "framework"]
+          },
+          "createdAt": "2024-01-10T00:00:00Z",
+          "updatedAt": "2024-01-20T00:00:00Z"
+        },
+        {
+          "id": "offering-resource-2",
+          "name": "IP Protection Checklist",
+          "description": "Comprehensive checklist for protecting intellectual property before licensing",
+          "type": "form",
+          "url": "/forms/ip-protection-checklist",
+          "metadata": {
+            "author": "IP Team",
+            "version": "v1.5",
+            "lastModified": "2024-01-18",
+            "tags": ["checklist", "protection", "ip"]
+          },
+          "createdAt": "2024-01-15T00:00:00Z",
+          "updatedAt": "2024-01-18T00:00:00Z"
+        }
+      ],
+      "outcomes": [
+        {
+          "id": "outcome-1",
+          "title": "You would like assistance settling on licensing business model",
+          "description": "We will help you determine the best licensing approach for your software including revenue models and legal structures",
+          "resourceCount": 2,
+          "associatedResources": [
+            {
+              "id": "outcome-resource-1",
+              "name": "Business Model Analysis Template",
+              "description": "Template for analyzing different licensing business models and their implications",
+              "type": "document",
+              "url": "/documents/business-model-analysis.docx",
+              "metadata": {
+                "author": "Business Team",
+                "version": "v1.3",
+                "lastModified": "2024-01-22",
+                "tags": ["business model", "analysis", "template"]
+              },
+              "createdAt": "2024-01-20T00:00:00Z",
+              "updatedAt": "2024-01-22T00:00:00Z"
+            },
+            {
+              "id": "outcome-resource-2",
+              "name": "Licensing Revenue Calculator",
+              "description": "Interactive calculator for estimating licensing revenue under different models",
+              "type": "url",
+              "url": "https://tools.example.com/licensing-calculator",
+              "metadata": {
+                "author": "External Tool",
+                "version": "vCurrent",
+                "lastModified": "2024-01-25",
+                "tags": ["calculator", "revenue", "licensing"]
+              },
+              "createdAt": "2024-01-25T00:00:00Z",
+              "updatedAt": "2024-01-25T00:00:00Z"
+            }
+          ],
+          "components": [
+            {
+              "id": "component-1",
+              "name": "Strategy Paper on Business Models",
+              "description": "We will walk you through various alternative business models for commercial exploitation of software, including self-hosting, hosted and SaaS models",
+              "units": 60,
+              "budget": 4500,
+              "lawArea": "Intellectual property law",
+              "lawSubArea": "Copyright",
+              "resourceCount": 3,
+              "associatedResources": [
+                {
+                  "id": "component-resource-1",
+                  "name": "Business Model Template.docx",
+                  "description": "Comprehensive template for documenting software licensing business models",
+                  "type": "document",
+                  "url": "/documents/business-model-template.docx",
+                  "metadata": {
+                    "author": "Legal Template Team",
+                    "version": "v2.0",
+                    "lastModified": "2024-01-15",
+                    "tags": ["template", "business model", "licensing"]
+                  },
+                  "createdAt": "2024-01-10T00:00:00Z",
+                  "updatedAt": "2024-01-15T00:00:00Z"
+                },
+                {
+                  "id": "component-resource-2",
+                  "name": "Licensing Agreement Template.pdf",
+                  "description": "Standard licensing agreement template with customizable clauses",
+                  "type": "document",
+                  "url": "/documents/licensing-agreement-template.pdf",
+                  "metadata": {
+                    "author": "Legal Team",
+                    "version": "v3.1",
+                    "lastModified": "2024-01-18",
+                    "tags": ["agreement", "template", "legal"]
+                  },
+                  "createdAt": "2024-01-12T00:00:00Z",
+                  "updatedAt": "2024-01-18T00:00:00Z"
+                },
+                {
+                  "id": "component-resource-3",
+                  "name": "Market Analysis Guide.pdf",
+                  "description": "Guide for conducting market analysis to inform licensing strategy",
+                  "type": "document",
+                  "url": "/documents/market-analysis-guide.pdf",
+                  "metadata": {
+                    "author": "Research Team",
+                    "version": "v1.2",
+                    "lastModified": "2024-01-20",
+                    "tags": ["market analysis", "guide", "strategy"]
+                  },
+                  "createdAt": "2024-01-16T00:00:00Z",
+                  "updatedAt": "2024-01-20T00:00:00Z"
+                }
+              ]
+            },
+            {
+              "id": "component-2",
+              "name": "Revenue Model Assessment",
+              "description": "Detailed assessment of potential revenue models and their legal implications",
+              "units": 40,
+              "budget": 3000,
+              "lawArea": "Commercial law",
+              "lawSubArea": "Contract law",
+              "resourceCount": 2,
+              "associatedResources": [
+                {
+                  "id": "component-resource-4",
+                  "name": "Revenue Model Comparison.xlsx",
+                  "description": "Spreadsheet comparing different revenue models with financial projections",
+                  "type": "document",
+                  "url": "/documents/revenue-model-comparison.xlsx",
+                  "metadata": {
+                    "author": "Finance Team",
+                    "version": "v1.0",
+                    "lastModified": "2024-01-14",
+                    "tags": ["revenue", "comparison", "financial"]
+                  },
+                  "createdAt": "2024-01-14T00:00:00Z",
+                  "updatedAt": "2024-01-14T00:00:00Z"
+                },
+                {
+                  "id": "component-resource-5",
+                  "name": "Legal Risk Assessment Form",
+                  "description": "Form for assessing legal risks associated with different revenue models",
+                  "type": "form",
+                  "url": "/forms/legal-risk-assessment",
+                  "metadata": {
+                    "author": "Risk Team",
+                    "version": "v1.1",
+                    "lastModified": "2024-01-16",
+                    "tags": ["risk", "assessment", "legal"]
+                  },
+                  "createdAt": "2024-01-16T00:00:00Z",
+                  "updatedAt": "2024-01-16T00:00:00Z"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "outcome-2",
+          "title": "You need assistance with licensing agreement drafting",
+          "description": "We will help you draft comprehensive licensing agreements that protect your interests",
+          "resourceCount": 1,
+          "associatedResources": [
+            {
+              "id": "outcome-resource-3",
+              "name": "Agreement Drafting Guidelines",
+              "description": "Best practices and guidelines for drafting effective licensing agreements",
+              "type": "document",
+              "url": "/documents/agreement-drafting-guidelines.pdf",
+              "metadata": {
+                "author": "Legal Drafting Team",
+                "version": "v2.3",
+                "lastModified": "2024-01-19",
+                "tags": ["drafting", "guidelines", "agreements"]
+              },
+              "createdAt": "2024-01-17T00:00:00Z",
+              "updatedAt": "2024-01-19T00:00:00Z"
+            }
+          ],
+          "components": [
+            {
+              "id": "component-3",
+              "name": "Draft Licensing Agreement",
+              "description": "Prepare a comprehensive licensing agreement tailored to your specific needs",
+              "units": 80,
+              "budget": 6000,
+              "lawArea": "Intellectual property law",
+              "lawSubArea": "Licensing",
+              "resourceCount": 1,
+              "associatedResources": [
+                {
+                  "id": "component-resource-6",
+                  "name": "Licensing Clauses Library",
+                  "description": "Library of standard and specialized clauses for licensing agreements",
+                  "type": "document",
+                  "url": "/documents/licensing-clauses-library.docx",
+                  "metadata": {
+                    "author": "Legal Library Team",
+                    "version": "v4.2",
+                    "lastModified": "2024-01-21",
+                    "tags": ["clauses", "library", "licensing"]
+                  },
+                  "createdAt": "2024-01-08T00:00:00Z",
+                  "updatedAt": "2024-01-21T00:00:00Z"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

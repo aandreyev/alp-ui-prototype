@@ -50,8 +50,8 @@
       </p>
     </div>
 
-    <!-- Document Type -->
-    <div class="grid grid-cols-2 gap-4">
+    <!-- Document Type & Classification -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
       <div>
         <label class="text-sm font-medium text-foreground">Document Type</label>
         <Select 
@@ -74,7 +74,7 @@
       </div>
       
       <div>
-        <label class="text-sm font-medium text-foreground">Confidentiality Level</label>
+        <label class="text-sm font-medium text-foreground">Confidentiality</label>
         <Select 
           :value="modelValue.confidentialityLevel || 'public'"
           @update:value="updateField('confidentialityLevel', $event)"
@@ -90,22 +90,7 @@
           </SelectContent>
         </Select>
       </div>
-    </div>
 
-    <!-- Version Information -->
-    <div class="grid grid-cols-2 gap-4">
-      <div>
-        <label class="text-sm font-medium text-foreground">Version</label>
-        <Input 
-          :value="modelValue.version || '1.0'"
-          @input="updateField('version', $event.target.value)"
-          placeholder="1.0"
-        />
-        <p class="text-xs text-muted-foreground mt-1">
-          Semantic versioning (e.g., 1.0, 1.1, 2.0)
-        </p>
-      </div>
-      
       <div>
         <label class="text-sm font-medium text-foreground">Language</label>
         <Select 
@@ -123,6 +108,31 @@
             <SelectItem value="other">Other</SelectItem>
           </SelectContent>
         </Select>
+      </div>
+    </div>
+
+    <!-- Version Information -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <label class="text-sm font-medium text-foreground">Version</label>
+        <Input 
+          :value="modelValue.version || '1.0'"
+          @input="updateField('version', $event.target.value)"
+          placeholder="1.0"
+          class="w-24"
+        />
+        <p class="text-xs text-muted-foreground mt-1">
+          Semantic versioning (e.g., 1.0, 1.1, 2.0)
+        </p>
+      </div>
+      
+      <div>
+        <label class="text-sm font-medium text-foreground">Author/Owner</label>
+        <Input 
+          :value="modelValue.author || ''"
+          @input="updateField('author', $event.target.value)"
+          placeholder="Document author or owner"
+        />
       </div>
     </div>
 
