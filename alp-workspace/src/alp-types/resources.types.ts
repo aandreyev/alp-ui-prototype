@@ -6,7 +6,14 @@
  * fetch resources from their linked offering elements.
  */
 
-export type ResourceType = 'form' | 'document' | 'url' | 'template'
+export type ResourceType =
+  | 'form'
+  | 'document'
+  | 'url'
+  | 'template'
+  | 'emailTemplate'
+  | 'video'
+  | 'vdFolder'
 
 export interface Resource {
   id: string

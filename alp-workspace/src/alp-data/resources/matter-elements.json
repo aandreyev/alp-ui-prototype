@@ -6,7 +6,7 @@
     "name": "Understanding your rights and deciding the best claim to make",
     "description": "Initial assessment and rights analysis for unfair dismissal claims",
     "sequence": 1,
-    "linkedOfferingElementId": "offering-outcome-001",
+  "linkedOfferingElementId": "outcome-1",
     "createdAt": "2024-01-01T00:00:00Z"
   },
   {
@@ -17,7 +17,7 @@
     "description": "Initial position analysis and high-level guidance provision",
     "parentId": "matter-outcome-001",
     "sequence": 1,
-    "linkedOfferingElementId": "offering-component-001",
+  "linkedOfferingElementId": "component-1",
     "createdAt": "2024-01-01T00:00:00Z"
   },
   {
@@ -28,7 +28,7 @@
     "description": "Formal written advice delivery",
     "parentId": "matter-outcome-001",
     "sequence": 2,
-    "linkedOfferingElementId": "offering-component-002",
+  "linkedOfferingElementId": "component-2",
     "createdAt": "2024-01-01T00:00:00Z"
   },
   {
@@ -38,7 +38,7 @@
     "name": "Bringing a formal complaint against your employer",
     "description": "Formal complaint process and negotiation",
     "sequence": 2,
-    "linkedOfferingElementId": "offering-outcome-002",
+  "linkedOfferingElementId": "outcome-2",
     "createdAt": "2024-01-01T00:00:00Z"
   },
   {
@@ -49,7 +49,7 @@
     "description": "FWC application preparation and lodgement",
     "parentId": "matter-outcome-002",
     "sequence": 1,
-    "linkedOfferingElementId": "offering-component-003",
+  "linkedOfferingElementId": "component-3",
     "createdAt": "2024-01-01T00:00:00Z"
   },
   {
@@ -60,7 +60,7 @@
     "description": "Negotiation process management",
     "parentId": "matter-outcome-002",
     "sequence": 2,
-    "linkedOfferingElementId": "offering-component-004",
+  "linkedOfferingElementId": "component-4",
     "createdAt": "2024-01-01T00:00:00Z"
   },
   {
@@ -71,7 +71,7 @@
     "description": "Settlement documentation and completion",
     "parentId": "matter-outcome-002",
     "sequence": 3,
-    "linkedOfferingElementId": "offering-component-005",
+  "linkedOfferingElementId": "component-5",
     "createdAt": "2024-01-01T00:00:00Z"
   }
 ]

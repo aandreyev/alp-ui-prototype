@@ -145,10 +145,28 @@
             <h3 class="section-title">
               Associated Resources ({{ localComponent.associatedResources.length }})
             </h3>
-            <Button @click="openResourceModal">
-              <Plus class="h-4 w-4 mr-2" />
-              Add Resources
-            </Button>
+            <div class="flex items-center gap-2">
+              <!-- Add existing resources -->
+              <Button @click="openResourceModal">
+                <Plus class="h-4 w-4 mr-2" />
+                Add Resources
+              </Button>
+
+              <!-- Create-new dropdown and button -->
+              <div class="flex items-center gap-2">
+                <select v-model="createResourceType" class="form-select h-9">
+                  <option value="document">Document</option>
+                  <option value="url">URL</option>
+                  <option value="form">Form</option>
+                  <option value="emailTemplate">Email Template</option>
+                  <option value="video">Video</option>
+                  <option value="vdFolder">VD Folder</option>
+                </select>
+                <Button variant="outline" @click="handleOpenCreate(createResourceType)">
+                  Create New
+                </Button>
+              </div>
+            </div>
           </div>
 
           <!-- Resources List -->
@@ -162,9 +180,10 @@
                 <FileText v-if="resource.type === 'document'" class="h-5 w-5 text-blue-600" />
                 <Link v-else-if="resource.type === 'url'" class="h-5 w-5 text-green-600" />
                 <FileCheck v-else-if="resource.type === 'form'" class="h-5 w-5 text-purple-600" />
-                <Mail v-else-if="resource.type === 'template'" class="h-5 w-5 text-orange-600" />
+                <Mail v-else-if="resource.type === 'emailTemplate'" class="h-5 w-5 text-orange-600" />
                 <Video v-else-if="resource.type === 'video'" class="h-5 w-5 text-red-600" />
-                <Folder v-else class="h-5 w-5 text-gray-600" />
+                <Folder v-else-if="resource.type === 'vdFolder'" class="h-5 w-5 text-gray-600" />
+                <FileText v-else class="h-5 w-5 text-gray-600" />
               </div>
               
               <div class="resource-content">
@@ -210,6 +229,17 @@
     :context-name="localComponent.name"
     @close="closeResourceModal"
     @associate="handleResourceAssociation"
+    @open-create="handleOpenCreate"
+  />
+
+  <!-- Create New Resource Modal (opened from association modal) -->
+  <SimplifiedResourceModal
+    v-if="showCreateResourceModal"
+    :is-open="showCreateResourceModal"
+    mode="create"
+    :resource-type="createResourceType"
+    @close="showCreateResourceModal = false"
+    @created="handleResourceCreated"
   />
 </template>
 
@@ -230,7 +260,9 @@ import {
   Edit,
   Trash2
 } from 'lucide-vue-next'
-import ResourceAssociationModal from './ResourceAssociationModal.vue'
+import ResourceAssociationModal from '../resource-association/ResourceAssociationModal.vue'
+// @ts-ignore - vue shim types may not resolve in this workspace
+import SimplifiedResourceModal from '../resources-add-edit/SimplifiedResourceModal.vue'
 import type { Resource } from '@/alp-types/resources.types'
 
 // Component interfaces
@@ -278,6 +310,9 @@ const localComponent = ref<SimplifiedComponent>({
 })
 
 const showResourceModal = ref(false)
+type ResourceTypeModal = 'document' | 'url' | 'form' | 'emailTemplate' | 'video' | 'vdFolder'
+const showCreateResourceModal = ref(false)
+const createResourceType = ref<ResourceTypeModal>('document')
 
 // Watch for component changes
 watch(() => props.component, (newComponent) => {
@@ -329,6 +364,21 @@ const handleResourceAssociation = (resources: Resource[]) => {
   closeResourceModal()
 }
 
+const handleOpenCreate = (resourceType: ResourceTypeModal) => {
+  // Close the association modal and open the create modal with selected type
+  showResourceModal.value = false
+  createResourceType.value = resourceType || 'document'
+  showCreateResourceModal.value = true
+}
+
+const handleResourceCreated = (resource: Resource) => {
+  if (!localComponent.value.associatedResources.find(r => r.id === resource.id)) {
+    localComponent.value.associatedResources.push(resource)
+  }
+  localComponent.value.resourceCount = localComponent.value.associatedResources.length
+  showCreateResourceModal.value = false
+}
+
 const editResource = (resource: Resource) => {
   console.log('Edit resource:', resource.name)
   // Placeholder - would open resource edit modal
@@ -360,7 +410,7 @@ const formatDate = (date: string) => {
 }
 </script>
 
-<style scoped>
+<style scoped lang="postcss">
 .component-designer-overlay {
   @apply fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-end;
 }

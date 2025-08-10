@@ -1,0 +1,83 @@
+{
+  "offerings": [
+    {
+      "id": "offering-1",
+      "name": "License your software (licensor)",
+      "description": "Protect and exploit your intellectual property (IP)",
+      "category": "Intellectual Property",
+      "sharePointUrl": "https://sharepoint.example.com/licensing",
+      "resourceCount": 2,
+      "associatedResourceIds": [
+        "offering-resource-1",
+        "offering-resource-2"
+      ],
+      "outcomes": [
+        {
+          "id": "outcome-1",
+          "title": "You would like assistance settling on licensing business model",
+          "description": "We will help you determine the best licensing approach for your software including revenue models and legal structures",
+          "resourceCount": 2,
+          "associatedResourceIds": [
+            "outcome-resource-1",
+            "outcome-resource-2"
+          ],
+          "components": [
+            {
+              "id": "component-1",
+              "name": "Strategy Paper on Business Models",
+              "description": "We will walk you through various alternative business models for commercial exploitation of software, including self-hosting, hosted and SaaS models",
+              "units": 60,
+              "budget": 4500,
+              "lawArea": "Intellectual property law",
+              "lawSubArea": "Copyright",
+              "resourceCount": 3,
+              "associatedResourceIds": [
+                "component-resource-1",
+                "component-resource-2",
+                "component-resource-3"
+              ]
+            },
+            {
+              "id": "component-2",
+              "name": "Revenue Model Assessment",
+              "description": "Detailed assessment of potential revenue models and their legal implications",
+              "units": 40,
+              "budget": 3000,
+              "lawArea": "Commercial law",
+              "lawSubArea": "Contract law",
+              "resourceCount": 2,
+              "associatedResourceIds": [
+                "component-resource-4",
+                "component-resource-5"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "outcome-2",
+          "title": "You need assistance with licensing agreement drafting",
+          "description": "We will help you draft comprehensive licensing agreements that protect your interests",
+          "resourceCount": 1,
+          "associatedResourceIds": [
+            "outcome-resource-3"
+          ],
+          "components": [
+            {
+              "id": "component-3",
+              "name": "Draft Licensing Agreement",
+              "description": "Prepare a comprehensive licensing agreement tailored to your specific needs",
+              "units": 80,
+              "budget": 6000,
+              "lawArea": "Intellectual property law",
+              "lawSubArea": "Licensing",
+              "resourceCount": 1,
+              "associatedResourceIds": [
+                "component-resource-6"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

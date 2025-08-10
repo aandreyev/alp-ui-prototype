@@ -31,11 +31,7 @@ The Portal Resources system addresses the key business objective: **To make reso
 - **Props**: `resource: Resource`, `showHierarchyPath?: boolean`, `compact?: boolean`
 - **Key Features**: Resource type icons, metadata display, hover actions
 
-#### `VDOfferingFolder.vue` (External SharePoint Links)
-- **Purpose**: Display direct links to SharePoint VD Offering Folders
-- **Responsibilities**: External link handling, SharePoint navigation
-- **Props**: `offering: Offering`
-- **Key Features**: External link indicators, SharePoint branding
+<!-- SharePoint links: If needed, expose offering `vdFolderUrl` or `sharePointUrl` in the parent view; no dedicated component in this stack. -->
 
 #### `ResourceHierarchy.vue` (Business Structure Display)
 - **Purpose**: Display resources organized by business hierarchy
@@ -90,9 +86,14 @@ interface Resource {
 
 ```
 /alp-data/resources/
+├── all-resources.json         # Unified catalog of all resources
+├── loadAllResources.ts        # Loader for unified resources
 ├── matter-elements.json       # Matter structure with offering links
-├── offering-resources.json    # Resources linked to offering elements
-└── offerings.json            # Offering metadata including VD folder URLs
+└── offerings.json             # Offering metadata including VD folder URLs
+
+/alp-data/resource-association/
+├── simplified-offerings-structure.json  # Offerings/outcomes/components with resource ID references
+└── loadSimplifiedOfferings.ts           # Resolves structure + catalog into associatedResources arrays
 ```
 
 ## Integration Patterns

@@ -84,7 +84,7 @@
 </template>
 
 <script setup lang="ts">
-import EnhancedOutcomesTab from '@/components/business/resources/EnhancedOutcomesTab.vue'
+import EnhancedOutcomesTab from '@/components/business/resource-matters/EnhancedOutcomesTab.vue'
 </script>
 
 <style scoped>

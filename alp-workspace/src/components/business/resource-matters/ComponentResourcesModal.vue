@@ -137,7 +137,7 @@ import {
   Download
 } from 'lucide-vue-next'
 import type { Resource } from '@/alp-types/resources.types'
-import ResourceCard from './ResourceCard.vue'
+import ResourceCard from '../resource-matters/ResourceCard.vue'
 
 // Enhanced component interface
 interface EnhancedComponent {

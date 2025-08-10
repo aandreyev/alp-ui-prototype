@@ -23,7 +23,7 @@
     <div v-if="offering.associatedResources.length > 0" class="offering-resources-section">
       <div class="section-header">
         <h3 class="section-title">Offering Resources ({{ offering.resourceCount }})</h3>
-        <Button size="sm" @click="addOfferingResource">
+        <Button variant="outline" size="sm" @click="addOfferingResource">
           <Plus class="h-4 w-4 mr-2" />
           Add Offering Resource
         </Button>
@@ -33,16 +33,16 @@
           v-for="resource in offering.associatedResources"
           :key="resource.id"
           :resource="resource"
-          :actions="['preview', 'open']"
-          @click="openResourceDetail"
-          @action="handleResourceAction"
+          :actions="['preview', 'open', 'delete']"
+          @click="openEditResource(resource)"
+          @action="(action, res) => handleOfferingResourceAction(action, res)"
         />
       </div>
     </div>
 
     <!-- Add Offering Resource (if no resources) -->
     <div v-else class="empty-resources-section">
-      <Button variant="outline" size="sm" @click="addOfferingResource">
+  <Button variant="outline" size="sm" @click="addOfferingResource">
         <Plus class="h-4 w-4 mr-2" />
         Add Offering Resource
       </Button>
@@ -52,10 +52,6 @@
     <div class="outcomes-section">
       <div class="section-header">
         <h2 class="section-title">Outcomes ({{ offering.outcomes.length }})</h2>
-        <Button @click="createOutcome">
-          <Plus class="h-4 w-4 mr-2" />
-          Create Outcome
-        </Button>
       </div>
 
       <!-- Outcome Containers -->
@@ -88,7 +84,11 @@
                 ${{ getOutcomeBudget(outcome).toLocaleString() }} ({{ getOutcomeUnits(outcome) }} units)
               </div>
             </div>
-            <div class="outcome-actions">
+              <div class="outcome-actions">
+              <Button variant="outline" size="sm" @click="removeOutcome(outcome)">
+                <Trash2 class="h-4 w-4 mr-2" />
+                Remove
+              </Button>
               <Button variant="outline" size="sm" @click="moveOutcome(outcome)">
                 <ArrowRight class="h-4 w-4 mr-2" />
                 Move
@@ -97,6 +97,10 @@
                 <Merge class="h-4 w-4 mr-2" />
                 Merge
               </Button>
+                <Button variant="ghost" size="sm" class="ml-1" @click="toggleOutcomeCollapse(outcome)" :aria-label="outcome.collapsed ? 'Expand components' : 'Collapse components'">
+                  <ChevronRight v-if="outcome.collapsed" class="h-4 w-4" />
+                  <ChevronDown v-else class="h-4 w-4" />
+                </Button>
             </div>
           </div>
 
@@ -111,7 +115,7 @@
           </div>
 
           <!-- Outcome-Level Resources -->
-          <div v-if="outcome.associatedResources.length > 0" class="outcome-resources-section">
+          <div v-if="!outcome.collapsed && outcome.associatedResources.length > 0" class="outcome-resources-section">
             <div class="subsection-header">
               <h4 class="subsection-title">Associated Resources ({{ outcome.resourceCount }})</h4>
               <Button variant="outline" size="sm" @click="addOutcomeResource(outcome)">
@@ -124,29 +128,25 @@
                 v-for="resource in outcome.associatedResources"
                 :key="resource.id"
                 :resource="resource"
-                :actions="['preview', 'open']"
-                @click="openResourceDetail"
-                @action="handleResourceAction"
+                :actions="['preview', 'open', 'delete']"
+                @click="openEditResource(resource)"
+                @action="(action, res) => handleOutcomeResourceAction(action, res, outcome)"
               />
             </div>
           </div>
 
           <!-- Add Outcome Resource (if no resources) -->
-          <div v-else class="empty-resources-section">
+          <div v-else-if="!outcome.collapsed" class="empty-resources-section">
             <Button variant="outline" size="sm" @click="addOutcomeResource(outcome)">
               <Plus class="h-4 w-4 mr-2" />
               Add Resource
             </Button>
           </div>
 
-          <!-- Components Section -->
-          <div class="components-section">
+          <!-- Components Section (collapsible) -->
+          <div class="components-section" v-if="!outcome.collapsed">
             <div class="subsection-header">
               <h4 class="subsection-title">Components ({{ outcome.components.length }})</h4>
-              <Button variant="outline" size="sm" @click="addComponent(outcome)">
-                <Plus class="h-4 w-4 mr-2" />
-                Add Component
-              </Button>
             </div>
 
             <!-- Component Cards -->
@@ -195,27 +195,55 @@
 
                 <!-- Component Resources -->
                 <div v-if="component.associatedResources.length > 0" class="component-resources-section">
-                  <h6 class="component-resources-title">Associated Resources ({{ component.resourceCount }})</h6>
+                  <div class="component-resources-header">
+                    <h6 class="component-resources-title">Associated Resources ({{ component.resourceCount }})</h6>
+                    <Button variant="outline" size="sm" @click="addComponentResource(outcome, component)">
+                      <Plus class="h-4 w-4 mr-2" />
+                      Add Resource
+                    </Button>
+                  </div>
                   <div class="resources-container">
                     <ResourceSummary
                       v-for="resource in component.associatedResources"
                       :key="resource.id"
                       :resource="resource"
-                      :actions="['preview', 'open']"
-                      @click="openResourceDetail"
-                      @action="handleResourceAction"
+                      :actions="['preview', 'open', 'delete']"
+                      @click="openEditResource(resource)"
+                      @action="(action, res) => handleComponentResourceAction(action, res, component)"
                     />
                   </div>
                 </div>
 
                 <!-- No Resources Message -->
                 <div v-else class="no-resources-message">
+                  <div class="component-resources-header">
+                    <h6 class="component-resources-title">Associated Resources (0)</h6>
+                    <Button variant="outline" size="sm" @click="addComponentResource(outcome, component)">
+                      <Plus class="h-4 w-4 mr-2" />
+                      Add Resource
+                    </Button>
+                  </div>
                   <p class="text-sm text-gray-500">No resources associated with this component</p>
                 </div>
               </div>
             </div>
+
+            <!-- Add Component moved below the list -->
+            <div class="components-footer">
+              <Button variant="outline" size="sm" @click="addComponent(outcome)">
+                <Plus class="h-4 w-4 mr-2" />
+                Add Component
+              </Button>
+            </div>
           </div>
         </div>
+      </div>
+      <!-- Create Outcome moved to bottom -->
+      <div class="flex justify-end mt-4">
+        <Button variant="outline" @click="createOutcome">
+          <Plus class="h-4 w-4 mr-2" />
+          Create Outcome
+        </Button>
       </div>
     </div>
 
@@ -226,11 +254,62 @@
       @close="closeComponentDesigner"
       @save="saveComponent"
     />
+    
+    <!-- Standardized Resource Add/Edit Modal -->
+    <SimplifiedResourceModal
+      :is-open="resourceModal.isOpen"
+      :mode="resourceModal.mode"
+      :resource-type="resourceModal.resourceType"
+      :resource="resourceModal.resource"
+      @close="resourceModal.isOpen = false"
+      @created="onResourceCreated"
+      @updated="onResourceUpdated"
+    />
+
+    <!-- Unified Resource Association Modal -->
+    <ResourceAssociationModal
+      :is-open="showAssociationModal"
+      :context-type="associationContext.type"
+      :context-name="associationContext.name"
+      @close="showAssociationModal = false"
+      @associate="onAssociateResources"
+      @open-create="onOpenCreateFromAssociation"
+    />
+
+    <!-- Delete resource confirmation -->
+    <ConfirmDialog
+      v-model:open="confirmState.open"
+      title="Remove resource"
+      :description="confirmDescription"
+      confirmText="Remove"
+      cancelText="Cancel"
+      @confirm="performDelete"
+    />
+
+    <!-- Remove component confirmation -->
+    <ConfirmDialog
+      v-model:open="removeComponentState.open"
+      title="Remove component"
+      :description="removeComponentDescription"
+      confirmText="Remove"
+      cancelText="Cancel"
+      @confirm="performRemoveComponent"
+    />
+
+    <!-- Remove outcome confirmation -->
+    <ConfirmDialog
+      v-model:open="removeOutcomeState.open"
+      title="Remove outcome"
+      :description="removeOutcomeDescription"
+      confirmText="Remove"
+      cancelText="Cancel"
+      @confirm="performRemoveOutcome"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, reactive, onMounted, computed } from 'vue'
 import { Button } from '@/lib/registry/new-york/ui/button'
 import { 
   Plus, 
@@ -241,14 +320,19 @@ import {
   Merge,
   Trash2,
   ChevronUp,
-  ChevronDown
+  ChevronDown,
+  ChevronRight
 } from 'lucide-vue-next'
-import ResourceSummary from '@/components/business/resources/ResourceSummary.vue'
+import ResourceSummary from '@/components/business/resource-matters/ResourceSummary.vue'
 import ComponentDesignerDrawer from './ComponentDesignerDrawer.vue'
+// @ts-ignore - Volar will resolve .vue at runtime
+import ResourceAssociationModal from './ResourceAssociationModal.vue'
+import ConfirmDialog from '@/components/ui/ConfirmDialog.vue'
 import type { Resource } from '@/alp-types/resources.types'
 
-// Import mock data
-import simplifiedOfferingsData from '@/alp-data/resource-association/simplified-offerings.json'
+// Shared offerings loader and standard resource modal
+import { loadSimplifiedOfferings, type SimplifiedOfferingsData } from '@/alp-data/resource-association/loadSimplifiedOfferings'
+import SimplifiedResourceModal from '@/components/business/resources-add-edit/SimplifiedResourceModal.vue'
 
 // Interfaces matching our data structure
 interface SimplifiedOffering {
@@ -266,6 +350,7 @@ interface SimplifiedOutcome {
   id: string
   title: string
   description: string
+  collapsed?: boolean
   resourceCount: number
   associatedResources: Resource[]
   components: SimplifiedComponent[]
@@ -287,9 +372,33 @@ interface SimplifiedComponent {
 }
 
 // Reactive state
-const offering = ref<SimplifiedOffering>(simplifiedOfferingsData.offerings[0] as SimplifiedOffering)
+const offering = ref<SimplifiedOffering>({
+  id: '',
+  name: '',
+  description: '',
+  category: '',
+  sharePointUrl: '#',
+  resourceCount: 0,
+  associatedResources: [],
+  outcomes: []
+})
 const showComponentDesigner = ref(false)
 const selectedComponent = ref<SimplifiedComponent | null>(null)
+type ResourceType = 'document' | 'url' | 'form' | 'emailTemplate' | 'video' | 'vdFolder'
+const resourceModal = ref<{ isOpen: boolean; mode: 'create'|'edit'; resourceType: ResourceType; resource: any | null }>({
+  isOpen: false,
+  mode: 'create',
+  resourceType: 'document',
+  resource: null,
+})
+const addTarget = ref<{ level: 'offering' | 'outcome' | 'component'; outcomeId?: string; componentId?: string } | null>(null)
+
+// Association modal state
+const showAssociationModal = ref(false)
+const associationContext = reactive<{ type: 'offering' | 'outcome' | 'component'; name: string }>({ type: 'offering', name: '' })
+
+// Track the outcome for a newly created component
+const newComponentOutcomeId = ref<string | null>(null)
 
 // Methods - Placeholder implementations
 const openSharePointFolder = () => {
@@ -301,15 +410,44 @@ const duplicateOffering = () => {
 }
 
 const addOfferingResource = () => {
-  alert('Resource Association Modal (Offering Level) - Coming Soon!')
+  addTarget.value = { level: 'offering' }
+  associationContext.type = 'offering'
+  associationContext.name = offering.value.name
+  showAssociationModal.value = true
 }
 
 const addOutcomeResource = (outcome: SimplifiedOutcome) => {
-  alert(`Resource Association Modal (Outcome: ${outcome.title}) - Coming Soon!`)
+  addTarget.value = { level: 'outcome', outcomeId: outcome.id }
+  associationContext.type = 'outcome'
+  associationContext.name = outcome.title
+  showAssociationModal.value = true
+}
+
+const addComponentResource = (outcome: SimplifiedOutcome, component: SimplifiedComponent) => {
+  addTarget.value = { level: 'component', outcomeId: outcome.id, componentId: component.id }
+  associationContext.type = 'component'
+  associationContext.name = component.name
+  showAssociationModal.value = true
 }
 
 const addComponent = (outcome: SimplifiedOutcome) => {
-  alert(`Add Component to Outcome: ${outcome.title} - Coming Soon!`)
+  // Open drawer in create mode with defaults
+  selectedComponent.value = {
+    id: `new-${Date.now()}`,
+    name: '',
+    description: '',
+    type: 'task',
+    units: 1,
+    budget: 0,
+    lawArea: 'general',
+    lawSubArea: 'intellectual-property',
+    instructions: '',
+    templateName: '',
+    resourceCount: 0,
+    associatedResources: []
+  }
+  newComponentOutcomeId.value = outcome.id
+  showComponentDesigner.value = true
 }
 
 const editComponent = (component: SimplifiedComponent) => {
@@ -331,19 +469,41 @@ const closeComponentDesigner = () => {
 
 const saveComponent = (updatedComponent: SimplifiedComponent) => {
   // Find and update the component in the offering data
+  let updated = false
   offering.value.outcomes.forEach(outcome => {
     const componentIndex = outcome.components.findIndex(c => c.id === updatedComponent.id)
     if (componentIndex !== -1) {
       outcome.components[componentIndex] = updatedComponent
+      updated = true
     }
   })
+  // If not found, treat as create and append to the target outcome
+  if (!updated) {
+    const targetOutcomeId = newComponentOutcomeId.value
+    const targetOutcome = offering.value.outcomes.find(o => o.id === targetOutcomeId)
+    if (targetOutcome) {
+      targetOutcome.components.push(updatedComponent)
+    }
+  }
   
   console.log('Component saved:', updatedComponent.name)
   closeComponentDesigner()
 }
 
 const createOutcome = () => {
-  alert('Create New Outcome - Coming Soon!')
+  const nextIndex = offering.value.outcomes.length + 1
+  const newOutcome: SimplifiedOutcome = {
+    id: `outcome-${Date.now()}`,
+    title: `New Outcome ${nextIndex}`,
+    description: '',
+  collapsed: false,
+    resourceCount: 0,
+    associatedResources: [],
+    components: [],
+  }
+  // Append to the end
+  offering.value.outcomes.push(newOutcome)
+  console.log('Created new outcome at end:', newOutcome.title)
 }
 
 const updateOutcomeTitle = (outcome: SimplifiedOutcome, event: Event) => {
@@ -359,8 +519,8 @@ const updateOutcomeDescription = (outcome: SimplifiedOutcome, event: Event) => {
 }
 
 const openResourceDetail = (resource: Resource) => {
+  // Keep for preview actions; edit uses openEditResource
   console.log('Opening resource detail:', resource.name)
-  // Placeholder - would open resource detail modal
 }
 
 const handleResourceAction = (action: string, resource: Resource) => {
@@ -368,6 +528,156 @@ const handleResourceAction = (action: string, resource: Resource) => {
   if (action === 'open') {
     window.open(resource.url, '_blank')
   }
+}
+
+// Context-aware action handlers for deletions
+const handleOfferingResourceAction = (action: string, resource: Resource) => {
+  if (action === 'delete') return confirmDelete('offering', resource)
+  handleResourceAction(action, resource)
+}
+
+const handleOutcomeResourceAction = (action: string, resource: Resource, outcome: SimplifiedOutcome) => {
+  if (action === 'delete') return confirmDelete('outcome', resource, outcome)
+  handleResourceAction(action, resource)
+}
+
+const handleComponentResourceAction = (action: string, resource: Resource, component: SimplifiedComponent) => {
+  if (action === 'delete') return confirmDelete('component', resource, undefined, component)
+  handleResourceAction(action, resource)
+}
+
+// Styled confirmation dialog state
+const confirmState = ref<{
+  open: boolean
+  scope: 'offering' | 'outcome' | 'component'
+  resource: Resource | null
+  outcome?: SimplifiedOutcome | null
+  component?: SimplifiedComponent | null
+}>({ open: false, scope: 'offering', resource: null, outcome: null, component: null })
+
+const confirmDelete = (
+  scope: 'offering' | 'outcome' | 'component',
+  resource: Resource,
+  outcome?: SimplifiedOutcome,
+  component?: SimplifiedComponent
+) => {
+  confirmState.value = { open: true, scope, resource, outcome: outcome || null, component: component || null }
+}
+
+const performDelete = () => {
+  const state = confirmState.value
+  const res = state.resource
+  if (!res) return
+  if (state.scope === 'offering') {
+    offering.value.associatedResources = offering.value.associatedResources.filter(r => r.id !== res.id)
+    offering.value.resourceCount = offering.value.associatedResources.length
+  } else if (state.scope === 'outcome' && state.outcome) {
+    state.outcome.associatedResources = state.outcome.associatedResources.filter(r => r.id !== res.id)
+    state.outcome.resourceCount = state.outcome.associatedResources.length
+  } else if (state.scope === 'component' && state.component) {
+    state.component.associatedResources = state.component.associatedResources.filter(r => r.id !== res.id)
+    state.component.resourceCount = state.component.associatedResources.length
+  }
+  confirmState.value.open = false
+}
+
+const confirmDescription = computed(() => {
+  const s = confirmState.value
+  if (!s.resource) return ''
+  return `Are you sure you want to remove "${s.resource.name}" from the ${s.scope}?`
+})
+
+// Remove component confirmation state
+const removeComponentState = ref<{ open: boolean; component: SimplifiedComponent | null; outcome: SimplifiedOutcome | null }>({ open: false, component: null, outcome: null })
+const removeComponentDescription = computed(() => {
+  const s = removeComponentState.value
+  return s.component ? `Are you sure you want to remove component "${s.component.name}"?` : ''
+})
+
+const openEditResource = (resource: Resource) => {
+  resourceModal.value = {
+    isOpen: true,
+    mode: 'edit',
+    resourceType: (resource.type as ResourceType) || 'document',
+    resource,
+  }
+}
+
+const onResourceCreated = (created: any) => {
+  const c = created as Resource
+  if (!addTarget.value) return
+  if (addTarget.value.level === 'offering') {
+    offering.value.associatedResources.push(c)
+    offering.value.resourceCount = offering.value.associatedResources.length
+  } else if (addTarget.value.level === 'outcome' && addTarget.value.outcomeId) {
+    const outcome = offering.value.outcomes.find(o => o.id === addTarget.value!.outcomeId)
+    if (outcome) {
+      outcome.associatedResources.push(c)
+      outcome.resourceCount = outcome.associatedResources.length
+    }
+  } else if (addTarget.value.level === 'component' && addTarget.value.outcomeId && addTarget.value.componentId) {
+    const outcome = offering.value.outcomes.find(o => o.id === addTarget.value!.outcomeId)
+    const component = outcome?.components.find(c => c.id === addTarget.value!.componentId)
+    if (component) {
+      // Add the newly created resource if not already present
+      if (!component.associatedResources.find(r => r.id === c.id)) {
+        component.associatedResources.push(c)
+        component.resourceCount = component.associatedResources.length
+      }
+    }
+  }
+  resourceModal.value.isOpen = false
+  addTarget.value = null
+}
+
+const onResourceUpdated = (updated: any) => {
+  const u = updated as Resource
+  // Update in offering-level resources
+  offering.value.associatedResources = offering.value.associatedResources.map(r => r.id === u.id ? u : r)
+  // Update in each outcome and component
+  offering.value.outcomes.forEach(out => {
+    out.associatedResources = out.associatedResources.map(r => r.id === u.id ? u : r)
+    out.components.forEach(c => {
+      c.associatedResources = c.associatedResources.map(r => r.id === u.id ? u : r)
+    })
+  })
+  resourceModal.value.isOpen = false
+}
+
+// Handle association modal completion
+const onAssociateResources = (resources: Resource[]) => {
+  if (!addTarget.value || !resources?.length) {
+    showAssociationModal.value = false
+    return
+  }
+  if (addTarget.value.level === 'offering') {
+    const existingIds = new Set(offering.value.associatedResources.map(r => r.id))
+    resources.forEach(r => { if (!existingIds.has(r.id)) offering.value.associatedResources.push(r) })
+    offering.value.resourceCount = offering.value.associatedResources.length
+  } else if (addTarget.value.level === 'outcome' && addTarget.value.outcomeId) {
+    const outcome = offering.value.outcomes.find(o => o.id === addTarget.value!.outcomeId)
+    if (outcome) {
+      const existingIds = new Set(outcome.associatedResources.map(r => r.id))
+      resources.forEach(r => { if (!existingIds.has(r.id)) outcome.associatedResources.push(r) })
+      outcome.resourceCount = outcome.associatedResources.length
+    }
+  } else if (addTarget.value.level === 'component' && addTarget.value.outcomeId && addTarget.value.componentId) {
+    const outcome = offering.value.outcomes.find(o => o.id === addTarget.value!.outcomeId)
+    const component = outcome?.components.find(c => c.id === addTarget.value!.componentId)
+    if (component) {
+      const existingIds = new Set(component.associatedResources.map(r => r.id))
+      resources.forEach((r: Resource) => { if (!existingIds.has(r.id)) component.associatedResources.push(r) })
+      component.resourceCount = component.associatedResources.length
+    }
+  }
+  addTarget.value = null
+  showAssociationModal.value = false
+}
+
+const onOpenCreateFromAssociation = (resourceType: ResourceType) => {
+  // Close association modal and open the create resource modal
+  showAssociationModal.value = false
+  resourceModal.value = { isOpen: true, mode: 'create', resourceType: resourceType || 'document', resource: null }
 }
 
 // Outcome action methods
@@ -419,15 +729,26 @@ const getOutcomeUnits = (outcome: SimplifiedOutcome) => {
   return outcome.components.reduce((total, component) => total + component.units, 0)
 }
 
+const toggleOutcomeCollapse = (outcome: SimplifiedOutcome) => {
+  outcome.collapsed = !outcome.collapsed
+}
+
 // Component action methods
 const removeComponent = (component: SimplifiedComponent, outcome: SimplifiedOutcome) => {
-  const componentIndex = outcome.components.findIndex(c => c.id === component.id)
-  if (componentIndex !== -1) {
-    if (confirm(`Are you sure you want to remove "${component.name}"?`)) {
-      outcome.components.splice(componentIndex, 1)
-      console.log('Removed component:', component.name)
-    }
+  removeComponentState.value.open = true
+  removeComponentState.value.component = component
+  removeComponentState.value.outcome = outcome
+}
+
+const performRemoveComponent = () => {
+  const s = removeComponentState.value
+  if (!s.component || !s.outcome) return
+  const idx = s.outcome.components.findIndex(c => c.id === s.component!.id)
+  if (idx !== -1) {
+    s.outcome.components.splice(idx, 1)
+    console.log('Removed component:', s.component.name)
   }
+  removeComponentState.value.open = false
 }
 
 const moveComponent = (component: SimplifiedComponent) => {
@@ -470,12 +791,40 @@ const isLastComponent = (component: SimplifiedComponent, outcome: SimplifiedOutc
   return components.findIndex(c => c.id === component.id) === components.length - 1
 }
 
+// Outcome removal state and handlers
+const removeOutcomeState = ref<{ open: boolean; outcome: SimplifiedOutcome | null }>({ open: false, outcome: null })
+const removeOutcomeDescription = computed(() => {
+  const s = removeOutcomeState.value
+  return s.outcome ? `Are you sure you want to remove outcome "${s.outcome.title}"?` : ''
+})
+
+const removeOutcome = (outcome: SimplifiedOutcome) => {
+  removeOutcomeState.value.open = true
+  removeOutcomeState.value.outcome = outcome
+}
+
+const performRemoveOutcome = () => {
+  const s = removeOutcomeState.value
+  if (!s.outcome) return
+  const idx = offering.value.outcomes.findIndex(o => o.id === s.outcome!.id)
+  if (idx !== -1) {
+    offering.value.outcomes.splice(idx, 1)
+    console.log('Removed outcome:', s.outcome.title)
+  }
+  removeOutcomeState.value.open = false
+}
+
 onMounted(() => {
-  console.log('SimplifiedOfferingDesigner mounted with offering:', offering.value.name)
+  loadSimplifiedOfferings<Resource>().then((data: SimplifiedOfferingsData<Resource>) => {
+    if (data.offerings && data.offerings.length > 0) {
+      offering.value = data.offerings[0] as unknown as SimplifiedOffering
+    }
+  })
+  console.log('SimplifiedOfferingDesigner mounted')
 })
 </script>
 
-<style scoped>
+<style scoped lang="postcss">
 .simplified-offering-designer {
   @apply p-6 bg-gray-50 min-h-screen;
 }
@@ -586,7 +935,7 @@ onMounted(() => {
 }
 
 .component-card {
-  @apply border border-gray-300 rounded-md p-4 bg-white shadow-sm hover:shadow-md transition-shadow;
+  @apply border border-gray-300 rounded-md p-4 bg-white shadow-sm hover:shadow-md transition-shadow border-l-4 border-l-purple-500;
 }
 
 .component-header {
@@ -603,6 +952,14 @@ onMounted(() => {
 
 .component-actions {
   @apply flex items-center space-x-2;
+}
+
+.components-footer {
+  @apply mt-3 flex justify-end;
+}
+
+.component-resources-header {
+  @apply flex items-center justify-between mb-2;
 }
 
 .component-name {

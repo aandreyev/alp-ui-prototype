@@ -53,7 +53,7 @@
               :key="resource.id"
               :resource="resource"
               :actions="['preview', 'open']"
-              @click="openResourceDetail"
+              @click="openEditResource(resource)"
               @action="handleResourceAction"
             />
           </div>
@@ -76,7 +76,7 @@
                 :key="resource.id"
                 :resource="resource"
                 :actions="['preview', 'open']"
-                @click="openResourceDetail"
+                @click="openEditResource(resource)"
                 @action="handleResourceAction"
               />
             </div>
@@ -139,7 +139,7 @@
                     :key="resource.id"
                     :resource="resource"
                     :actions="['preview', 'open']"
-                    @click="openResourceDetail"
+                    @click="openEditResource(resource)"
                     @action="handleResourceAction"
                   />
                 </div>
@@ -165,11 +165,21 @@
       @close="closeResourceDetailModal"
       @action="handleResourceDetailAction"
     />
+
+    <!-- Standardized Resource Add/Edit Modal -->
+    <SimplifiedResourceModal
+      :is-open="resourceModal.isOpen"
+      :mode="resourceModal.mode"
+      :resource-type="resourceModal.resourceType"
+      :resource="resourceModal.resource"
+      @close="resourceModal.isOpen = false"
+      @updated="onResourceUpdated"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { Button } from '@/lib/registry/new-york/ui/button'
 import { Input } from '@/lib/registry/new-york/ui/input'
 import { Checkbox } from '@/lib/registry/new-york/ui/checkbox'
@@ -179,12 +189,15 @@ import {
   Play, 
   Trash2
 } from 'lucide-vue-next'
-import ComponentResourcesModal from './ComponentResourcesModal.vue'
-import ResourceDetailModal from './ResourceDetailModal.vue'
-import ResourceCard from './ResourceCard.vue'
-import ResourceFilters from './ResourceFilters.vue'
-import ResourceSummary from './ResourceSummary.vue'
-import type { Resource, ResourceMetadata, ResourceFilterState } from '@/alp-types/resources.types'
+import ComponentResourcesModal from '../resource-matters/ComponentResourcesModal.vue'
+import ResourceDetailModal from '../resource-matters/ResourceDetailModal.vue'
+import ResourceCard from '../resource-matters/ResourceCard.vue'
+import ResourceFilters from '../resource-matters/ResourceFilters.vue'
+import ResourceSummary from '../resource-matters/ResourceSummary.vue'
+import type { Resource, ResourceMetadata, ResourceFilterState, ResourceType as GlobalResourceType } from '@/alp-types/resources.types'
+import SimplifiedResourceModal from '@/components/business/resources-add-edit/SimplifiedResourceModal.vue'
+import { loadSimplifiedOfferings } from '@/alp-data/resource-association/loadSimplifiedOfferings'
+import { normalizeOfferings } from '@/alp-data/resource-association/normalizeOfferings'
 
 // Enhanced interfaces for the outcomes tab
 interface EnhancedOffering {
@@ -231,316 +244,32 @@ const componentModalVisible = ref(false)
 const selectedResource = ref<Resource | null>(null)
 const resourceDetailModalVisible = ref(false)
 
-// Sample data - in real implementation, this would come from API
-const offerings = ref<EnhancedOffering[]>([
-  {
-    id: 'offering-1',
-    name: 'Make a claim for unfair dismissal',
-    sharePointUrl: 'https://sharepoint.example.com/unfair-dismissal',
-    resources: [
-      {
-        id: 'offering-resource-1',
-        name: 'Unfair Dismissal Overview',
-        description: 'Complete overview of unfair dismissal laws, procedures, and your rights as an employee. Essential reading before proceeding with any claim.',
-        type: 'document',
-        url: '/documents/unfair-dismissal-overview.pdf',
-        metadata: {
-          author: 'Employment Law Team',
-          version: 'v3.0',
-          lastModified: '2024-01-20',
-          tags: ['unfair dismissal', 'overview', 'employee rights']
-        },
-        createdAt: '2024-01-10T00:00:00Z',
-        updatedAt: '2024-01-20T00:00:00Z'
-      },
-      {
-        id: 'offering-resource-2',
-        name: 'Initial Assessment Checklist',
-        description: 'Pre-screening checklist to determine if you have grounds for an unfair dismissal claim. Complete this before booking a consultation.',
-        type: 'form',
-        url: '/forms/initial-assessment',
-        metadata: {
-          author: 'Legal Assessment Team',
-          version: 'v2.5',
-          lastModified: '2024-01-18',
-          tags: ['assessment', 'checklist', 'pre-screening']
-        },
-        createdAt: '2024-01-05T00:00:00Z',
-        updatedAt: '2024-01-18T00:00:00Z'
-      }
-    ],
-    outcomes: [
-      {
-        id: 'outcome-1',
-        title: 'You would like us to act as your executor and/or trustee.',
-        offeringId: 'offering-1',
-        resources: [
-          {
-            id: 'resource-1',
-            name: 'Executor Appointment Guide',
-            description: 'Comprehensive guide covering the legal requirements and responsibilities for executor appointments, including step-by-step procedures and compliance requirements.',
-            type: 'document',
-            url: '/documents/executor-guide.pdf',
-            metadata: {
-              author: 'Legal Team',
-              version: 'v2.1',
-              lastModified: '2024-01-15',
-              tags: ['executor', 'appointment', 'guide']
-            },
-            createdAt: '2024-01-15T00:00:00Z',
-            updatedAt: '2024-01-15T00:00:00Z'
-          },
-          {
-            id: 'resource-2',
-            name: 'Trustee Responsibilities Checklist',
-            description: 'Interactive checklist outlining all trustee duties and responsibilities, with checkboxes for tracking completion of required tasks.',
-            type: 'form',
-            url: '/forms/trustee-checklist.pdf',
-            metadata: {
-              author: 'Legal Team',
-              version: 'v1.3',
-              lastModified: '2024-01-10',
-              tags: ['trustee', 'responsibilities', 'checklist']
-            },
-            createdAt: '2024-01-10T00:00:00Z',
-            updatedAt: '2024-01-10T00:00:00Z'
-          }
-        ],
-        components: [
-          {
-            id: 'component-1',
-            title: "'Charging Letter' for executor role",
-            status: 'pending',
-            units: { completed: 0, total: 0 },
-            dueDate: undefined,
-            resources: [
-              {
-                id: 'resource-3',
-                name: 'Executor Charging Letter Template',
-                type: 'template',
-                url: '/templates/executor-charging-letter.docx',
-                metadata: {
-                  author: 'Legal Template Team',
-                  version: 'v1.0',
-                  lastModified: '2024-01-05',
-                  tags: ['executor', 'charging', 'letter', 'template']
-                },
-                createdAt: '2024-01-05T00:00:00Z',
-                updatedAt: '2024-01-05T00:00:00Z'
-              },
-              {
-                id: 'resource-4',
-                name: 'Fee Structure Guidelines',
-                type: 'document',
-                url: '/documents/fee-structure.pdf',
-                metadata: {
-                  author: 'Finance Team',
-                  version: 'v2.0',
-                  lastModified: '2024-01-12',
-                  tags: ['fees', 'structure', 'guidelines']
-                },
-                createdAt: '2024-01-12T00:00:00Z',
-                updatedAt: '2024-01-12T00:00:00Z'
-              }
-            ]
-          }
-        ]
-      },
-      {
-        id: 'outcome-2',
-        title: 'You would like to update your estate planning documents to pass on your wealth when you die, including an update to your Will and associated documents.',
-        offeringId: 'offering-1',
-        resources: [
-          {
-            id: 'resource-5',
-            name: 'Estate Planning Overview',
-            type: 'document',
-            url: '/documents/estate-planning-overview.pdf',
-            metadata: {
-              author: 'Estate Planning Team',
-              version: 'v3.1',
-              lastModified: '2024-01-20',
-              tags: ['estate', 'planning', 'overview']
-            },
-            createdAt: '2024-01-20T00:00:00Z',
-            updatedAt: '2024-01-20T00:00:00Z'
-          },
-          {
-            id: 'resource-6',
-            name: 'Estate Planning Resources Database',
-            type: 'url',
-            url: 'https://resources.example.com/estate-planning',
-            metadata: {
-              author: 'External Provider',
-              version: 'vCurrent',
-              lastModified: '2024-01-25',
-              tags: ['estate', 'planning', 'database', 'external']
-            },
-            createdAt: '2024-01-25T00:00:00Z',
-            updatedAt: '2024-01-25T00:00:00Z'
-          }
-        ],
-        components: [
-          {
-            id: 'component-2',
-            title: 'Prepare an update to existing Wills',
-            status: 'in-progress',
-            units: { completed: 0, total: 22 },
-            dueDate: undefined,
-            resources: [
-              {
-                id: 'resource-7',
-                name: 'Will Amendment Template',
-                type: 'template',
-                url: '/templates/will-amendment.docx',
-                metadata: {
-                  author: 'Legal Template Team',
-                  version: 'v2.1',
-                  lastModified: '2024-01-18',
-                  tags: ['will', 'amendment', 'template']
-                },
-                createdAt: '2024-01-18T00:00:00Z',
-                updatedAt: '2024-01-18T00:00:00Z'
-              },
-              {
-                id: 'resource-8',
-                name: 'Will Review Checklist',
-                type: 'form',
-                url: '/forms/will-review-checklist.pdf',
-                metadata: {
-                  author: 'Legal Team',
-                  version: 'v1.5',
-                  lastModified: '2024-01-16',
-                  tags: ['will', 'review', 'checklist']
-                },
-                createdAt: '2024-01-16T00:00:00Z',
-                updatedAt: '2024-01-16T00:00:00Z'
-              },
-              {
-                id: 'resource-9',
-                name: 'Legal Precedents Database',
-                type: 'url',
-                url: 'https://precedents.example.com/wills',
-                metadata: {
-                  author: 'Legal Research Team',
-                  version: 'vCurrent',
-                  lastModified: '2024-01-22',
-                  tags: ['legal', 'precedents', 'database']
-                },
-                createdAt: '2024-01-22T00:00:00Z',
-                updatedAt: '2024-01-22T00:00:00Z'
-              }
-            ]
-          },
-          {
-            id: 'component-3',
-            title: 'Prepare a Codicil',
-            status: 'pending',
-            units: { completed: 0, total: 22 },
-            dueDate: undefined,
-            resources: [
-              {
-                id: 'resource-10',
-                name: 'Codicil Template',
-                type: 'template',
-                url: '/templates/codicil.docx',
-                metadata: {
-                  author: 'Legal Template Team',
-                  version: 'v1.2',
-                  lastModified: '2024-01-14',
-                  tags: ['codicil', 'template']
-                },
-                createdAt: '2024-01-14T00:00:00Z',
-                updatedAt: '2024-01-14T00:00:00Z'
-              },
-              {
-                id: 'resource-11',
-                name: 'Codicil Drafting Guidelines',
-                type: 'document',
-                url: '/documents/codicil-guidelines.pdf',
-                metadata: {
-                  author: 'Legal Team',
-                  version: 'v1.8',
-                  lastModified: '2024-01-19',
-                  tags: ['codicil', 'drafting', 'guidelines']
-                },
-                createdAt: '2024-01-19T00:00:00Z',
-                updatedAt: '2024-01-19T00:00:00Z'
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  },
-  {
-    id: 'offering-2',
-    name: 'TEST Offering',
-    sharePointUrl: 'https://sharepoint.example.com/test-offering',
-    outcomes: [
-      {
-        id: 'outcome-3',
-        title: 'TEST Offering Outcome',
-        offeringId: 'offering-2',
-        resources: [
-          {
-            id: 'resource-12',
-            name: 'Test Resource Document',
-            type: 'document',
-            url: '/documents/test-resource.pdf',
-            metadata: {
-              author: 'Test Team',
-              version: 'v1.0',
-              lastModified: '2024-01-01',
-              tags: ['test', 'resource']
-            },
-            createdAt: '2024-01-01T00:00:00Z',
-            updatedAt: '2024-01-01T00:00:00Z'
-          }
-        ],
-        components: [
-          {
-            id: 'component-4',
-            title: 'TEST DELETE ME',
-            status: 'pending',
-            units: { completed: 0, total: 10 },
-            dueDate: undefined,
-            resources: [
-              {
-                id: 'resource-13',
-                name: 'Test Component Template',
-                type: 'template',
-                url: '/templates/test-component.docx',
-                metadata: {
-                  author: 'Test Team',
-                  version: 'v1.0',
-                  lastModified: '2024-01-01',
-                  tags: ['test', 'component', 'template']
-                },
-                createdAt: '2024-01-01T00:00:00Z',
-                updatedAt: '2024-01-01T00:00:00Z'
-              },
-              {
-                id: 'resource-14',
-                name: 'Test External Link',
-                type: 'url',
-                url: 'https://example.com/test',
-                metadata: {
-                  author: 'External',
-                  version: 'vCurrent',
-                  lastModified: '2024-01-01',
-                  tags: ['test', 'external', 'link']
-                },
-                createdAt: '2024-01-01T00:00:00Z',
-                updatedAt: '2024-01-01T00:00:00Z'
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  }
-])
+// Load standardized offerings/outcomes/components from shared JSON
+const offerings = ref<EnhancedOffering[]>([])
+onMounted(async () => {
+  const data = await loadSimplifiedOfferings<Resource>()
+  const normalized = normalizeOfferings<Resource>(data)
+  offerings.value = normalized.map(o => ({
+    id: o.id,
+    name: o.name,
+    sharePointUrl: o.sharePointUrl,
+    resources: o.resources || [],
+    outcomes: o.outcomes.map(out => ({
+      id: out.id,
+      title: out.title,
+      offeringId: o.id,
+      resources: out.resources || [],
+      components: out.components.map(c => ({
+        id: c.id,
+        title: (c as any).title || (c as any).name || 'Component',
+        status: 'pending',
+        units: typeof (c as any).units === 'number' ? { completed: 0, total: (c as any).units } : { completed: 0, total: ((c as any).units?.total ?? 0) },
+        dueDate: undefined,
+        resources: (c as any).resources || [],
+      }))
+    }))
+  }))
+})
 
 // Computed properties
 const totalResourceCount = computed(() => {
@@ -609,9 +338,23 @@ const openSharePointFolder = (url: string) => {
   window.open(url, '_blank')
 }
 
-const openResourceDetail = (resource: Resource) => {
-  selectedResource.value = resource
-  resourceDetailModalVisible.value = true
+// Standardized resource edit modal
+type ModalResourceType = Exclude<GlobalResourceType, 'template'>
+const resourceModal = ref<{ isOpen: boolean; mode: 'create' | 'edit'; resourceType: ModalResourceType; resource: any | null }>({
+  isOpen: false,
+  mode: 'edit',
+  resourceType: 'document',
+  resource: null,
+})
+
+const openEditResource = (resource: Resource) => {
+  const modalType = (resource.type === 'template' ? 'document' : resource.type) as ModalResourceType
+  resourceModal.value = {
+    isOpen: true,
+    mode: 'edit',
+    resourceType: modalType,
+    resource,
+  }
 }
 
 const openResource = (resource: Resource) => {
@@ -620,9 +363,10 @@ const openResource = (resource: Resource) => {
     case 'url':
       window.open(resource.url, '_blank')
       break
-    case 'document':
-    case 'form':
-    case 'template':
+  case 'document':
+  case 'form':
+  case 'template':
+  case 'emailTemplate':
       // For documents, forms, and templates, open in new tab or download
       window.open(resource.url, '_blank')
       break
@@ -664,7 +408,7 @@ const handleComponentResourceAction = (action: string, resource: Resource) => {
   console.log('Component resource action:', action, resource.name)
   // Handle component resource actions
   if (action === 'detail') {
-    openResourceDetail(resource)
+  openEditResource(resource)
   }
 }
 
@@ -677,7 +421,7 @@ const handleResourceAction = (action: string, resource: Resource) => {
   console.log('Resource action:', action, resource.name)
   // Handle resource actions from ResourceCard
   if (action === 'preview') {
-    openResourceDetail(resource)
+  openEditResource(resource)
   } else if (action === 'open') {
     openResource(resource)
   }
@@ -687,9 +431,26 @@ const handleResourceDetailAction = (action: string, resource: Resource) => {
   console.log('Resource detail action:', action, resource.name)
   // Handle resource detail actions (open, copy, etc.)
 }
+
+// When SimplifiedResourceModal emits updated, replace the resource in-place everywhere
+const onResourceUpdated = (updated: any) => {
+  const u = updated as Resource
+  offerings.value.forEach(offering => {
+    if (offering.resources && offering.resources.length) {
+      offering.resources = offering.resources.map(r => (r.id === u.id ? u : r))
+    }
+    offering.outcomes.forEach(out => {
+      out.resources = out.resources.map(r => (r.id === u.id ? u : r))
+      out.components.forEach(c => {
+        c.resources = c.resources.map(r => (r.id === u.id ? u : r))
+      })
+    })
+  })
+  resourceModal.value.isOpen = false
+}
 </script>
 
-<style scoped>
+<style scoped lang="postcss">
 .enhanced-outcomes-tab {
   @apply p-6 bg-gray-50 min-h-screen;
 }

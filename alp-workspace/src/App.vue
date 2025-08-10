@@ -80,6 +80,28 @@
             </div>
           </div>
 
+          <!-- Simplified Resources Prototype -->
+          <div class="prototype-card" @click="selectPrototype('simplified-resources')">
+            <div class="prototype-icon">
+              <svg class="w-12 h-12 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+              </svg>
+            </div>
+            <h2 class="prototype-title">Simplified Resource Modals</h2>
+            <p class="prototype-description">
+              Streamlined resource creation and editing modals with type-specific configurations. 
+              Test all resource types including documents, URLs, forms, email templates, videos, and SharePoint folders.
+            </p>
+            <div class="prototype-features">
+              <span class="feature-tag">Type-Specific Forms</span>
+              <span class="feature-tag">Unified Interface</span>
+              <span class="feature-tag">Test Suite</span>
+            </div>
+            <div class="prototype-cta">
+              <span>View Prototype →</span>
+            </div>
+          </div>
+
         </div>
 
         <!-- URL Instructions -->
@@ -128,9 +150,10 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import AppPortalResources from '@/App-portal-resources.vue'
-import AppResourceTypes from '@/App-resource-types.vue'
-import AppResourceAssociation from '@/App-resource-association.vue'
+import AppPortalResources from './App-portal-resources.vue'
+import AppResourceTypes from './App-resource-types.vue'
+import AppResourceAssociation from './App-resource-association.vue'
+import AppSimplifiedResources from './App-simplified-resources.vue'
 
 // Reactive state
 const selectedPrototype = ref<string | null>(null)
@@ -139,7 +162,8 @@ const selectedPrototype = ref<string | null>(null)
 const prototypeComponents = {
   'portal-resources': AppPortalResources,
   'resource-types': AppResourceTypes,
-  'resource-association': AppResourceAssociation
+  'resource-association': AppResourceAssociation,
+  'simplified-resources': AppSimplifiedResources
 }
 
 // Computed properties

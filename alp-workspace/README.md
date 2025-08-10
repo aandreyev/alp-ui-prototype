@@ -85,7 +85,7 @@ alp-workspace/
 
 1. Load ALP documentation into `/documentation/`
 2. Analyze ALP's existing component patterns
-3. Create sample data matching ALP's schema in `/alp-data/`
+3. Create sample data matching ALP's schema in `/alp-data/` (see `src/alp-data/README.md` for the unified catalog + structure split and loaders)
 4. Build components following ALP's conventions
 5. Test integration with ALP's actual systems
 

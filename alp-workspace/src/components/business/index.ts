@@ -4,12 +4,8 @@
  * Export all resource management components for easy importing
  */
 
-export { default as MatterResourcesTab } from './MatterResourcesTab.vue'
-export { default as ResourceCard } from './ResourceCard.vue'
-export { default as VDOfferingFolder } from './VDOfferingFolder.vue'
-export { default as ResourceFilters } from './ResourceFilters.vue'
-export { default as ResourceHierarchy } from './ResourceHierarchy.vue'
-export { default as ResourceModal } from './ResourceModal.vue'
+export { default as ResourceCard } from './resource-matters/ResourceCard.vue'
+export { default as ResourceFilters } from './resource-matters/ResourceFilters.vue'
 
 // Re-export types for convenience
 export type {
