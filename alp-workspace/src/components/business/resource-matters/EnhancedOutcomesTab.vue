@@ -175,6 +175,16 @@
       @close="resourceModal.isOpen = false"
       @updated="onResourceUpdated"
     />
+
+    <!-- Delete component confirmation -->
+    <ConfirmDialog
+      v-model:open="removeComponentState.open"
+      title="Remove component"
+      :description="removeComponentDescription"
+      confirmText="Remove"
+      cancelText="Cancel"
+      @confirm="performRemoveComponent"
+    />
   </div>
 </template>
 
@@ -198,6 +208,7 @@ import type { Resource, ResourceMetadata, ResourceFilterState, ResourceType as G
 import SimplifiedResourceModal from '@/components/business/resources-add-edit/SimplifiedResourceModal.vue'
 import { loadSimplifiedOfferings } from '@/alp-data/resource-association/loadSimplifiedOfferings'
 import { normalizeOfferings } from '@/alp-data/resource-association/normalizeOfferings'
+import ConfirmDialog from '@/components/ui/ConfirmDialog.vue'
 
 // Enhanced interfaces for the outcomes tab
 interface EnhancedOffering {
@@ -386,8 +397,8 @@ const startComponentWorkflow = (component: EnhancedComponent) => {
 }
 
 const deleteComponent = (component: EnhancedComponent) => {
-  console.log('Deleting component:', component.title)
-  // Handle component deletion
+  removeComponentState.value.open = true
+  removeComponentState.value.component = component
 }
 
 const formatDate = (date: Date) => {
@@ -448,6 +459,29 @@ const onResourceUpdated = (updated: any) => {
   })
   resourceModal.value.isOpen = false
 }
+
+// Remove component confirmation state and handler
+const removeComponentState = ref<{ open: boolean; component: EnhancedComponent | null }>({ open: false, component: null })
+const removeComponentDescription = computed(() => {
+  const s = removeComponentState.value
+  return s.component ? `Are you sure you want to remove component "${s.component.title}"?` : ''
+})
+
+const performRemoveComponent = () => {
+  const s = removeComponentState.value
+  if (!s.component) return
+  // Find and remove the component from the appropriate outcome
+  offerings.value.forEach(offering => {
+    offering.outcomes.forEach(outcome => {
+      const idx = outcome.components.findIndex(c => c.id === s.component!.id)
+      if (idx !== -1) {
+        outcome.components.splice(idx, 1)
+      }
+    })
+  })
+  removeComponentState.value.open = false
+  removeComponentState.value.component = null
+}
 </script>
 
 <style scoped lang="postcss">
@@ -486,7 +520,7 @@ const onResourceUpdated = (updated: any) => {
 
 /* Level 2: Outcome Container - Organized Groups */
 .outcome-container {
-  @apply border border-gray-200 rounded-md p-5 bg-slate-50 shadow-sm mb-4;
+  @apply border border-gray-200 rounded-md p-5 bg-slate-50 shadow-sm mb-4 border-l-4 border-l-green-500;
 }
 
 .outcome-title {
@@ -524,7 +558,7 @@ const onResourceUpdated = (updated: any) => {
 
 /* Level 3: Component Container - Clean Workspace Areas */
 .component-container {
-  @apply border border-gray-300 rounded-md p-4 bg-white shadow-sm hover:shadow-md transition-shadow mb-3;
+  @apply border border-gray-300 rounded-md p-4 bg-white shadow-sm hover:shadow-md transition-shadow mb-3 border-l-4 border-l-purple-500;
 }
 
 .component-header {

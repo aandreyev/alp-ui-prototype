@@ -35,7 +35,7 @@
         <AlertDescription>{{ error }}</AlertDescription>
       </Alert>
 
-      <div class="space-y-6 overflow-y-auto flex-1 py-4 pr-2">
+      <div class="space-y-6 overflow-y-auto flex-1 p-4 md:px-6">
         <!-- Common Fields -->
         <div class="space-y-4">
           <div>
@@ -535,6 +535,7 @@ watch(() => props.resource, (newResource) => {
     // Properly spread all resource properties for editing
     const newFormData = {
       ...newResource,
+      metadata: { ...(newResource as any).metadata || {} },
       tags: newResource.metadata?.tags || [],
       // Ensure type-specific fields are included
       url: newResource.url || '',
@@ -578,6 +579,7 @@ watch(() => props.isOpen, async (newValue) => {
         description: '',
         tags: [],
         type: props.resourceType,
+        metadata: {},
         url: '',
         syntaqFormId: '',
         subjectLine: '',
@@ -607,6 +609,7 @@ watch(() => props.isOpen, async (newValue) => {
       originalResource.value = props.resource
       const editFormData = {
         ...props.resource,
+        metadata: { ...(props.resource as any).metadata || {} },
         tags: props.resource.metadata?.tags || [],
         url: props.resource.url || '',
         syntaqFormId: props.resource.syntaqFormId || '',

@@ -42,7 +42,7 @@
           </div>
           <div class="flex items-center gap-1">
             <Button variant="outline" size="sm" @click.stop="preview(r)">Preview</Button>
-            <Button variant="ghost" size="sm" @click.stop="openEdit(r)">Details</Button>
+            <Button variant="outline" size="sm" @click.stop="openEdit(r)">Details</Button>
             <Button variant="destructive" size="sm" @click.stop="remove(r)">Delete</Button>
           </div>
         </div>
@@ -62,6 +62,16 @@
       @created="onCreated"
       @updated="onUpdated"
     />
+
+    <!-- Delete confirmation dialog -->
+    <ConfirmDialog
+      v-model:open="confirmState.open"
+      title="Remove resource"
+      :description="confirmDescription"
+      confirmText="Remove"
+      cancelText="Cancel"
+      @confirm="performRemove"
+    />
   </div>
 </template>
 
@@ -72,6 +82,7 @@ import { Input } from '@/lib/registry/new-york/ui/input'
 import { loadAllResources } from '@/alp-data/resources/loadAllResources'
 import type { Resource, ResourceType } from '@/alp-types/resources.types'
 import SimplifiedResourceModal from '@/components/business/resources-add-edit/SimplifiedResourceModal.vue'
+import ConfirmDialog from '@/components/ui/ConfirmDialog.vue'
 
 // Accept resourceType from parent (use global canonical type)
 const props = defineProps<{ resourceType: ResourceType }>()
@@ -145,10 +156,19 @@ function preview(resource: Resource) {
   console.log('Preview resource:', resource)
 }
 
+// Styled confirmation dialog state and handlers (align with offering designer)
+const confirmState = ref<{ open: boolean; resource: Resource | null }>({ open: false, resource: null })
+const confirmDescription = computed(() => confirmState.value.resource ? `Are you sure you want to remove "${confirmState.value.resource.name}"?` : '')
+
 function remove(resource: Resource) {
-  // Simple confirm for prototype; replace with a proper confirm dialog later
-  if (!confirm(`Delete "${resource.name}"? This cannot be undone.`)) return
-  allResources.value = allResources.value.filter(r => r.id !== resource.id)
+  confirmState.value = { open: true, resource }
+}
+
+function performRemove() {
+  const res = confirmState.value.resource
+  if (!res) return
+  allResources.value = allResources.value.filter(r => r.id !== res.id)
+  confirmState.value.open = false
 }
 
 // Utils

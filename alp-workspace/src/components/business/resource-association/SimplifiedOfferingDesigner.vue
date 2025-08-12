@@ -496,7 +496,7 @@ const createOutcome = () => {
     id: `outcome-${Date.now()}`,
     title: `New Outcome ${nextIndex}`,
     description: '',
-  collapsed: false,
+    collapsed: true,
     resourceCount: 0,
     associatedResources: [],
     components: [],
@@ -817,7 +817,10 @@ const performRemoveOutcome = () => {
 onMounted(() => {
   loadSimplifiedOfferings<Resource>().then((data: SimplifiedOfferingsData<Resource>) => {
     if (data.offerings && data.offerings.length > 0) {
-      offering.value = data.offerings[0] as unknown as SimplifiedOffering
+      const loaded = data.offerings[0] as unknown as SimplifiedOffering
+      // Collapse all outcomes by default on initial load
+      loaded.outcomes = loaded.outcomes.map((o) => ({ ...o, collapsed: true }))
+      offering.value = loaded
     }
   })
   console.log('SimplifiedOfferingDesigner mounted')

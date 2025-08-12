@@ -9,7 +9,28 @@
       "fileSize": 245760,
       "mimeType": "application/pdf",
       "author": "Sarah Johnson",
-      "version": "2.1"
+      "version": "2.1",
+      "versionHistory": [
+        {
+          "id": "v-1-1",
+          "version": "1.0",
+          "fileName": "client-intake-template-v1.pdf",
+          "url": "/documents/client-intake-template-v1.pdf",
+          "fileSize": 200000,
+          "mimeType": "application/pdf",
+          "uploadedAt": "2024-01-10T10:30:00Z"
+        },
+        {
+          "id": "v-1-2",
+          "version": "2.1",
+          "fileName": "client-intake-template.pdf",
+          "url": "/documents/client-intake-template.pdf",
+          "fileSize": 245760,
+          "mimeType": "application/pdf",
+          "uploadedAt": "2024-02-20T14:45:00Z"
+        }
+      ],
+      "activeVersionId": "v-1-2"
     },
     "createdAt": "2024-01-15T10:30:00Z",
     "updatedAt": "2024-02-20T14:45:00Z",
@@ -114,9 +135,21 @@
     "url": "/documents/offering-overview.docx",
     "metadata": {
       "author": "Legal Team",
-      "version": "v2.1",
+      "version": "2.1",
       "lastModified": "2024-01-20",
-      "tags": ["overview", "licensing", "framework"]
+      "tags": ["overview", "licensing", "framework"],
+      "versionHistory": [
+        {
+          "id": "v-off-1",
+          "version": "2.1",
+          "fileName": "offering-overview.docx",
+          "url": "/documents/offering-overview.docx",
+          "fileSize": 102400,
+          "mimeType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+          "uploadedAt": "2024-01-20T00:00:00Z"
+        }
+      ],
+      "activeVersionId": "v-off-1"
     },
     "createdAt": "2024-01-10T00:00:00Z",
     "updatedAt": "2024-01-20T00:00:00Z"
@@ -144,9 +177,21 @@
     "url": "/documents/business-model-analysis.docx",
     "metadata": {
       "author": "Business Team",
-      "version": "v1.3",
+      "version": "1.3",
       "lastModified": "2024-01-22",
-      "tags": ["business model", "analysis", "template"]
+      "tags": ["business model", "analysis", "template"],
+      "versionHistory": [
+        {
+          "id": "v-out-1",
+          "version": "1.3",
+          "fileName": "business-model-analysis.docx",
+          "url": "/documents/business-model-analysis.docx",
+          "fileSize": 120000,
+          "mimeType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+          "uploadedAt": "2024-01-22T00:00:00Z"
+        }
+      ],
+      "activeVersionId": "v-out-1"
     },
     "createdAt": "2024-01-20T00:00:00Z",
     "updatedAt": "2024-01-22T00:00:00Z"
@@ -174,9 +219,21 @@
     "url": "/documents/agreement-drafting-guidelines.pdf",
     "metadata": {
       "author": "Legal Drafting Team",
-      "version": "v2.3",
+      "version": "2.3",
       "lastModified": "2024-01-19",
-      "tags": ["drafting", "guidelines", "agreements"]
+      "tags": ["drafting", "guidelines", "agreements"],
+      "versionHistory": [
+        {
+          "id": "v-out-3",
+          "version": "2.3",
+          "fileName": "agreement-drafting-guidelines.pdf",
+          "url": "/documents/agreement-drafting-guidelines.pdf",
+          "fileSize": 300000,
+          "mimeType": "application/pdf",
+          "uploadedAt": "2024-01-19T00:00:00Z"
+        }
+      ],
+      "activeVersionId": "v-out-3"
     },
     "createdAt": "2024-01-17T00:00:00Z",
     "updatedAt": "2024-01-19T00:00:00Z"
@@ -189,9 +246,21 @@
     "url": "/documents/business-model-template.docx",
     "metadata": {
       "author": "Legal Template Team",
-      "version": "v2.0",
+      "version": "2.0",
       "lastModified": "2024-01-15",
-      "tags": ["template", "business model", "licensing"]
+      "tags": ["template", "business model", "licensing"],
+      "versionHistory": [
+        {
+          "id": "v-comp-1",
+          "version": "2.0",
+          "fileName": "business-model-template.docx",
+          "url": "/documents/business-model-template.docx",
+          "fileSize": 110000,
+          "mimeType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+          "uploadedAt": "2024-01-15T00:00:00Z"
+        }
+      ],
+      "activeVersionId": "v-comp-1"
     },
     "createdAt": "2024-01-10T00:00:00Z",
     "updatedAt": "2024-01-15T00:00:00Z"

@@ -34,6 +34,21 @@ export interface ResourceMetadata {
   author?: string
   version?: string
   lastModified?: string
+  // Document versioning (prototype)
+  versionHistory?: DocumentVersion[]
+  activeVersionId?: string
+}
+
+// Document version entry for prototype versioning
+export interface DocumentVersion {
+  id: string
+  version: string // e.g., "2.1"
+  fileName: string
+  url: string
+  fileSize: number
+  mimeType: string
+  uploadedAt: string
+  uploadedBy?: string
 }
 
 export interface Offering {

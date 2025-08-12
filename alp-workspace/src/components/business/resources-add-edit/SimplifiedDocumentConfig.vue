@@ -74,18 +74,16 @@
       </p>
     </div>
 
-    <!-- Version and Author -->
+    <!-- Versioning and Author -->
     <div class="grid grid-cols-2 gap-4">
       <div>
         <label class="text-sm font-medium text-foreground">Version</label>
         <Input 
-          :modelValue="data?.version ?? '1.0'"
-          @update:modelValue="$emit('update:field', 'version', $event)"
-          placeholder="1.0"
+          :modelValue="activeVersionLabel"
+          readonly
+          class="bg-muted text-muted-foreground"
         />
-        <p class="text-xs text-muted-foreground mt-1">
-          e.g., 1.0, 1.1, 2.0
-        </p>
+        <p class="text-xs text-muted-foreground mt-1">Managed automatically when new versions are uploaded</p>
       </div>
       
       <div>
@@ -95,6 +93,31 @@
           @update:modelValue="$emit('update:field', 'author', $event)"
           placeholder="Document author"
         />
+      </div>
+    </div>
+
+    <!-- Version history selector (if any) -->
+    <div v-if="versionHistory.length" class="border rounded-lg p-3 bg-muted/30">
+      <div class="flex items-center justify-between mb-2">
+        <div class="text-sm font-medium">Versions</div>
+        <Button size="sm" variant="outline" @click="triggerFileUpload">Upload new version</Button>
+      </div>
+      <div class="space-y-2">
+        <div 
+          v-for="v in sortedVersionHistory" 
+          :key="v.id" 
+          class="flex items-center justify-between p-2 rounded cursor-pointer hover:bg-muted"
+          @click="selectVersion(v)"
+        >
+          <div>
+            <div class="text-sm font-medium">v{{ v.version }} • {{ v.fileName }}</div>
+            <div class="text-xs text-muted-foreground">{{ formatDate(v.uploadedAt) }} • {{ v.mimeType }} • {{ formatFileSize(v.fileSize) }}</div>
+          </div>
+          <span 
+            v-if="isActiveVersion(v)" 
+            class="text-xs px-2 py-0.5 rounded bg-primary/10 text-primary"
+          >Active</span>
+        </div>
       </div>
     </div>
 
@@ -194,21 +217,31 @@ function handleDrop(event: DragEvent) {
  * Process uploaded file
  */
 function processFile(file: File) {
-  // Update file information
-  emit('update:field', 'fileName', file.name)
-  emit('update:field', 'fileSize', file.size)
-  emit('update:field', 'mimeType', file.type)
-  emit('update:field', 'lastUpdated', new Date().toISOString())
-  
-  // Generate a mock URL for demo purposes
-  emit('update:field', 'url', `/documents/${file.name}`)
-  
-  // Set default version if not set
-  if (!props.data?.version) {
-    emit('update:field', 'version', '1.0')
+  const uploadedAt = new Date().toISOString()
+  const nextVersion = computeNextVersion(currentVersionRaw.value)
+  const newVersion = {
+    id: `v-${Date.now()}`,
+    version: nextVersion,
+    fileName: file.name,
+    url: `/documents/${file.name}`,
+    fileSize: file.size,
+    mimeType: file.type,
+    uploadedAt
   }
-  
-  console.log('File processed:', file.name, file.size, file.type)
+
+  const history = [...versionHistory.value, newVersion]
+  emit('update:field', 'metadata.versionHistory', history)
+  emit('update:field', 'metadata.activeVersionId', newVersion.id)
+
+  // Mirror active version fields to top-level for compatibility
+  emit('update:field', 'fileName', newVersion.fileName)
+  emit('update:field', 'fileSize', newVersion.fileSize)
+  emit('update:field', 'mimeType', newVersion.mimeType)
+  emit('update:field', 'url', newVersion.url)
+  emit('update:field', 'version', newVersion.version)
+  emit('update:field', 'lastUpdated', uploadedAt)
+
+  console.log('Uploaded new document version:', newVersion)
 }
 
 /**
@@ -256,5 +289,39 @@ function formatDate(dateString: string): string {
     day: 'numeric',
     year: 'numeric'
   }).format(date)
+}
+
+// Versioning helpers
+import type { DocumentVersion } from '@/alp-types/resources.types'
+import { computed as vComputed } from 'vue'
+
+const versionHistory = vComputed<DocumentVersion[]>(() => props.data?.metadata?.versionHistory || [])
+const activeVersionId = vComputed<string | undefined>(() => props.data?.metadata?.activeVersionId)
+const sortedVersionHistory = vComputed(() => [...versionHistory.value].sort((a,b) => (a.uploadedAt < b.uploadedAt ? 1 : -1)))
+
+const currentVersionRaw = vComputed<string>(() => props.data?.version || (versionHistory.value.find(v => v.id === activeVersionId.value)?.version ?? '1.0'))
+const activeVersionLabel = vComputed<string>(() => `v${currentVersionRaw.value}`)
+
+function isActiveVersion(v: DocumentVersion) {
+  return v.id === activeVersionId.value
+}
+
+function selectVersion(v: DocumentVersion) {
+  emit('update:field', 'metadata.activeVersionId', v.id)
+  // Mirror to top-level
+  emit('update:field', 'fileName', v.fileName)
+  emit('update:field', 'fileSize', v.fileSize)
+  emit('update:field', 'mimeType', v.mimeType)
+  emit('update:field', 'url', v.url)
+  emit('update:field', 'version', v.version)
+  emit('update:field', 'lastUpdated', v.uploadedAt)
+}
+
+function computeNextVersion(current: string): string {
+  const m = String(current || '1.0').match(/^(\d+)\.(\d+)$/)
+  if (!m) return '1.0'
+  const major = Number(m[1])
+  const minor = Number(m[2])
+  return `${major}.${minor + 1}`
 }
 </script>
