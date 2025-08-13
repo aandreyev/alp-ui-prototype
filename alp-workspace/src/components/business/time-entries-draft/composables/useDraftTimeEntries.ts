@@ -11,6 +11,7 @@ export interface DraftTimeEntry {
   matterId: string | null
   matterComponentId: string | null
   matterOutcomeId: string | null
+  matterOutcomeDescription?: string
   status: 'draft' | 'ignored' | 'complete' | 'confirmed'
   aiGeneratedDescription: string | null
   originalContext: Record<string, any>
@@ -21,6 +22,12 @@ export interface DraftTimeEntry {
   updatedAt: string
   processedAt: string | null
   isDeleted: boolean
+  // Optional fields to align with full time entry modal
+  staffName?: string
+  rate?: number
+  billableType?: 'Billable' | 'NonBillable' | 'NonChargeable' | 'ProBono'
+  gstType?: 'GST' | 'GST_EXPORT' | 'BAS_EXCLUDED'
+  matterComponentDescription?: string
 }
 
 async function loadMock(): Promise<DraftTimeEntry[]> {
