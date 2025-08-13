@@ -154,6 +154,7 @@ import AppPortalResources from './App-portal-resources.vue'
 import AppResourceTypes from './App-resource-types.vue'
 import AppResourceAssociation from './App-resource-association.vue'
 import AppSimplifiedResources from './App-simplified-resources.vue'
+import DraftTimeEntriesPage from '@/components/business/time-entries-draft/DraftTimeEntriesPage.vue'
 
 // Reactive state
 const selectedPrototype = ref<string | null>(null)
@@ -163,7 +164,8 @@ const prototypeComponents = {
   'portal-resources': AppPortalResources,
   'resource-types': AppResourceTypes,
   'resource-association': AppResourceAssociation,
-  'simplified-resources': AppSimplifiedResources
+  'simplified-resources': AppSimplifiedResources,
+  'time-entries-draft': DraftTimeEntriesPage
 }
 
 // Computed properties
