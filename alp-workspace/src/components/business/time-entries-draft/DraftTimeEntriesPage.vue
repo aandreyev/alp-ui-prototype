@@ -24,21 +24,32 @@
         </div>
       </div>
       <div class="divide-y">
-        <div v-for="e in activeEntries" :key="e.id" class="p-3 flex items-center gap-3">
-          <Checkbox :checked="selectedIds.has(e.id)" @update:checked="toggleSelect(e.id)" />
-          <div class="w-28 text-sm">{{ formatDate(e.date) }}</div>
-          <div class="w-24 text-xs rounded px-2 py-0.5 bg-muted text-muted-foreground">{{ e.sourceType }}</div>
-          <div class="w-20 text-sm">{{ e.durationMinutes }}u</div>
-          <div class="w-24 text-sm">{{ e.matterId || '—' }}</div>
-          <div class="flex-1 text-sm truncate">{{ e.description || e.aiGeneratedDescription || '—' }}</div>
-          <div class="w-24">
-            <span v-if="computeComplete(e)" class="text-xs text-green-600">Complete</span>
-            <span v-else class="text-xs text-amber-600">Draft</span>
-          </div>
-          <div class="flex items-center gap-1">
-            <Button variant="outline" size="sm" @click.stop="openEdit(e)">Edit</Button>
-            <Button variant="outline" size="sm" @click.stop="markIgnored(e.id)">Ignore</Button>
-            <Button v-if="computeComplete(e)" size="sm" @click.stop="confirmFromList(e)">Confirm</Button>
+        <div v-for="e in activeEntries" :key="e.id" class="p-3">
+          <div class="flex items-start gap-3 min-h-[3rem]">
+            <div class="flex-shrink-0 mt-0.5">
+              <Checkbox :checked="selectedIds.has(e.id)" @update:checked="toggleSelect(e.id)" />
+            </div>
+            <div class="flex-shrink-0 w-28 text-sm pt-0.5">{{ formatDate(e.date) }}</div>
+            <div class="flex-shrink-0 w-24 text-xs rounded px-2 py-0.5 bg-muted text-muted-foreground mt-0.5">{{ e.sourceType }}</div>
+            <div class="flex-shrink-0 w-20 text-sm pt-0.5">{{ e.durationMinutes }}u</div>
+            <div class="flex-shrink-0 w-24 text-sm pt-0.5">{{ e.matterId || '—' }}</div>
+            
+            <!-- Flexible-width wrapping description -->
+            <div class="flex-1 text-sm leading-relaxed">
+              <div class="whitespace-normal break-words">
+                {{ getDescriptionText(e) }}
+              </div>
+            </div>
+            
+            <div class="flex-shrink-0 pt-0.5 mr-3">
+              <span v-if="computeComplete(e)" class="text-xs text-green-600">Complete</span>
+              <span v-else class="text-xs text-amber-600">Draft</span>
+            </div>
+            <div class="flex-shrink-0 flex items-start gap-1 pt-0.5">
+              <Button variant="outline" size="sm" @click.stop="openEdit(e)">Edit</Button>
+              <Button variant="outline" size="sm" @click.stop="markIgnored(e.id)">Ignore</Button>
+              <Button v-if="computeComplete(e)" size="sm" @click.stop="confirmFromList(e)">Confirm</Button>
+            </div>
           </div>
         </div>
       </div>
@@ -50,17 +61,26 @@
         <div class="text-sm font-medium text-gray-600">Ignored Entries ({{ ignoredEntries.length }})</div>
       </div>
       <div class="divide-y">
-        <div v-for="e in ignoredEntries" :key="e.id" class="p-3 flex items-center gap-3 opacity-60">
-          <div class="w-28 text-sm">{{ formatDate(e.date) }}</div>
-          <div class="w-24 text-xs rounded px-2 py-0.5 bg-gray-300 text-gray-600">{{ e.sourceType }}</div>
-          <div class="w-20 text-sm">{{ e.durationMinutes }}u</div>
-          <div class="w-24 text-sm">{{ e.matterId || '—' }}</div>
-          <div class="flex-1 text-sm truncate">{{ e.description || e.aiGeneratedDescription || '—' }}</div>
-          <div class="w-24">
-            <span class="text-xs text-gray-500">Ignored</span>
-          </div>
-          <div class="flex items-center gap-1">
-            <Button variant="outline" size="sm" @click.stop="unignoreEntry(e.id)">Edit</Button>
+        <div v-for="e in ignoredEntries" :key="e.id" class="p-3 opacity-60">
+          <div class="flex items-start gap-3 min-h-[3rem]">
+            <div class="flex-shrink-0 w-28 text-sm pt-0.5">{{ formatDate(e.date) }}</div>
+            <div class="flex-shrink-0 w-24 text-xs rounded px-2 py-0.5 bg-gray-300 text-gray-600 mt-0.5">{{ e.sourceType }}</div>
+            <div class="flex-shrink-0 w-20 text-sm pt-0.5">{{ e.durationMinutes }}u</div>
+            <div class="flex-shrink-0 w-24 text-sm pt-0.5">{{ e.matterId || '—' }}</div>
+            
+            <!-- Flexible-width wrapping description -->
+            <div class="flex-1 text-sm leading-relaxed">
+              <div class="whitespace-normal break-words">
+                {{ getDescriptionText(e) }}
+              </div>
+            </div>
+            
+            <div class="flex-shrink-0 pt-0.5 mr-3">
+              <span class="text-xs text-gray-500">Ignored</span>
+            </div>
+            <div class="flex-shrink-0 flex items-start gap-1 pt-0.5">
+              <Button variant="outline" size="sm" @click.stop="unignoreEntry(e.id)">Edit</Button>
+            </div>
           </div>
         </div>
       </div>
@@ -210,6 +230,10 @@ function unignoreEntry(entryId: string) {
     // Open the entry for editing immediately
     openEdit(entries.value[i])
   }
+}
+
+function getDescriptionText(entry: DraftTimeEntry): string {
+  return entry.description || entry.aiGeneratedDescription || '—'
 }
 function formatDate(iso?: string) {
   if (!iso) return '—'
