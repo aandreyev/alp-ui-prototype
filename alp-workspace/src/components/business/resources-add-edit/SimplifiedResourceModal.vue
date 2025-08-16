@@ -69,6 +69,30 @@
           
           <div>
             <label class="text-sm font-medium text-foreground">
+              Business Area
+            </label>
+            <Select 
+              v-model="formData.businessArea"
+              @update:model-value="updateField('businessArea', $event)"
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select business area" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Marketing">Marketing</SelectItem>
+                <SelectItem value="Sales">Sales</SelectItem>
+                <SelectItem value="Value Delivery">Value Delivery</SelectItem>
+                <SelectItem value="Business Operations">Business Operations</SelectItem>
+                <SelectItem value="Value Creation">Value Creation</SelectItem>
+              </SelectContent>
+            </Select>
+            <p class="text-xs text-muted-foreground mt-1">
+              Choose the primary business area this resource supports
+            </p>
+          </div>
+          
+          <div>
+            <label class="text-sm font-medium text-foreground">
               Tags
             </label>
             <TagInput 
@@ -262,6 +286,13 @@ import { Button } from '@/lib/registry/new-york/ui/button'
 import { Input } from '@/lib/registry/new-york/ui/input'
 import { Textarea } from '@/lib/registry/new-york/ui/textarea'
 import { Alert, AlertDescription, AlertTitle } from '@/lib/registry/new-york/ui/alert'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/lib/registry/new-york/ui/select'
 
 // Custom Components
 import TagInput from '@/components/ui/admin/resources/components/TagInput.vue'
@@ -322,6 +353,7 @@ const originalResource = ref<Resource | null>(null)
 const formData = ref<any>({
   name: '',
   description: '',
+  businessArea: '',
   tags: [],
   type: props.resourceType
 })
@@ -457,6 +489,7 @@ const handleClose = () => {
   formData.value = {
     name: '',
     description: '',
+    businessArea: '',
     tags: [],
     type: props.resourceType
   }
@@ -577,6 +610,7 @@ watch(() => props.isOpen, async (newValue) => {
       formData.value = {
         name: '',
         description: '',
+        businessArea: '',
         tags: [],
         type: props.resourceType,
         metadata: {},

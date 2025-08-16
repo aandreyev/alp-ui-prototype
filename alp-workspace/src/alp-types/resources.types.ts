@@ -22,6 +22,7 @@ export interface Resource {
   type: ResourceType
   url?: string
   filePath?: string
+  businessArea?: 'Marketing' | 'Sales' | 'Value Delivery' | 'Business Operations' | 'Value Creation'
   metadata: ResourceMetadata
   createdAt: string
   updatedAt: string

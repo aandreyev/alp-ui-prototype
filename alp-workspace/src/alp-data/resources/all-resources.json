@@ -4,6 +4,7 @@
     "name": "Client Intake Form Template",
     "description": "Standard template for new client intake process",
     "type": "document",
+    "businessArea": "Sales",
     "metadata": {
       "tags": ["template", "intake", "client"],
       "fileSize": 245760,
@@ -48,6 +49,7 @@
     "name": "ASIC Company Search",
     "description": "Direct link to ASIC company search portal",
     "type": "url",
+    "businessArea": "Business Operations",
     "url": "https://asic.gov.au/online-services/search-asics-registers",
     "metadata": {
       "tags": ["asic", "company", "search", "government"]
@@ -65,6 +67,7 @@
     "name": "Document Collection Form",
     "description": "Syntaq form for collecting client documents",
     "type": "form",
+    "businessArea": "Value Delivery",
     "metadata": {
       "tags": ["documents", "collection", "client"]
     },
@@ -80,6 +83,7 @@
     "name": "Welcome Email Template",
     "description": "Welcome email sent to new clients",
     "type": "emailTemplate",
+    "businessArea": "Marketing",
     "metadata": {
       "tags": ["welcome", "email", "client"],
       "author": "Marketing Team",
@@ -99,6 +103,7 @@
     "name": "Training Video - Matter Management",
     "description": "Training video on how to manage matters in the system",
     "type": "video",
+    "businessArea": "Value Creation",
     "metadata": {
       "tags": ["training", "matter", "management"],
       "author": "Training Department"
@@ -133,6 +138,7 @@
     "description": "Complete overview of the licensing offering including legal framework and process steps",
     "type": "document",
     "url": "/documents/offering-overview.docx",
+    "documentType": "guide",
     "metadata": {
       "author": "Legal Team",
       "version": "2.1",
@@ -175,6 +181,7 @@
     "description": "Template for analyzing different licensing business models and their implications",
     "type": "document",
     "url": "/documents/business-model-analysis.docx",
+    "documentType": "template",
     "metadata": {
       "author": "Business Team",
       "version": "1.3",
@@ -217,6 +224,7 @@
     "description": "Best practices and guidelines for drafting effective licensing agreements",
     "type": "document",
     "url": "/documents/agreement-drafting-guidelines.pdf",
+    "documentType": "guidelines",
     "metadata": {
       "author": "Legal Drafting Team",
       "version": "2.3",
@@ -244,6 +252,7 @@
     "description": "Comprehensive template for documenting software licensing business models",
     "type": "document",
     "url": "/documents/business-model-template.docx",
+    "documentType": "template",
     "metadata": {
       "author": "Legal Template Team",
       "version": "2.0",
@@ -271,6 +280,7 @@
     "description": "Standard licensing agreement template with customizable clauses",
     "type": "document",
     "url": "/documents/licensing-agreement-template.pdf",
+    "documentType": "template",
     "metadata": {
       "author": "Legal Team",
       "version": "v3.1",
@@ -286,6 +296,7 @@
     "description": "Guide for conducting market analysis to inform licensing strategy",
     "type": "document",
     "url": "/documents/market-analysis-guide.pdf",
+    "documentType": "guide",
     "metadata": {
       "author": "Research Team",
       "version": "v1.2",
@@ -301,6 +312,7 @@
     "description": "Spreadsheet comparing different revenue models with financial projections",
     "type": "document",
     "url": "/documents/revenue-model-comparison.xlsx",
+    "documentType": "spreadsheet",
     "metadata": {
       "author": "Finance Team",
       "version": "v1.0",
@@ -331,6 +343,7 @@
     "description": "Library of standard and specialized clauses for licensing agreements",
     "type": "document",
     "url": "/documents/licensing-clauses-library.docx",
+    "documentType": "library",
     "metadata": {
       "author": "Legal Library Team",
       "version": "v4.2",
@@ -347,6 +360,7 @@
     "description": "Comprehensive guide to unfair dismissal rights and processes",
     "type": "document",
     "url": "https://docs.example.com/unfair-dismissal-rights",
+    "documentType": "overview",
     "metadata": {
       "author": "Legal Team",
       "version": "3.1",
@@ -377,6 +391,7 @@
     "description": "Internal guidelines for analyzing client position",
     "type": "document",
     "url": "https://docs.example.com/position-analysis-guidelines",
+    "documentType": "guidelines",
     "metadata": {
       "author": "Senior Legal Team",
       "version": "1.5",
@@ -422,6 +437,7 @@
     "description": "Best practices for client communication",
     "type": "document",
     "url": "https://docs.example.com/client-communication",
+    "documentType": "guidelines",
     "metadata": {
       "author": "Client Relations Team",
       "version": "2.0",
@@ -452,6 +468,7 @@
     "description": "Comprehensive checklist for gathering evidence",
     "type": "document",
     "url": "https://docs.example.com/evidence-checklist",
+    "documentType": "checklist",
     "metadata": {
       "author": "Legal Process Team",
       "version": "2.8",
@@ -467,6 +484,7 @@
     "description": "Strategic approaches to employer negotiations",
     "type": "document",
     "url": "https://docs.example.com/negotiation-strategy",
+    "documentType": "guide",
     "metadata": {
       "author": "Senior Partners",
       "version": "3.0",
@@ -497,6 +515,7 @@
     "description": "Step-by-step checklist for settlement completion",
     "type": "document",
     "url": "https://docs.example.com/settlement-checklist",
+    "documentType": "checklist",
     "metadata": {
       "author": "Process Management Team",
       "version": "1.7",
