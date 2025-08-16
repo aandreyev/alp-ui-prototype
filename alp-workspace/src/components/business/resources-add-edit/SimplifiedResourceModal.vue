@@ -6,9 +6,9 @@
           <component :is="resourceTypeConfig?.icon" class="w-5 h-5" />
           <div>
             <DialogTitle>
-              {{ mode === 'create' ? 'Create' : 'Edit' }} {{ resourceTypeConfig?.label }}
+              {{ mode === 'create' ? 'Create' : mode === 'view' ? (isEditing ? 'Edit' : 'View') : 'Edit' }} {{ resourceTypeConfig?.label }}
             </DialogTitle>
-            <DialogDescription v-if="mode === 'edit' && originalResource">
+            <DialogDescription v-if="(mode === 'edit' || mode === 'view') && originalResource">
               {{ originalResource.name }} • Last modified {{ formatDate(originalResource.updatedAt) }}
             </DialogDescription>
             <DialogDescription v-else>
@@ -36,8 +36,16 @@
       </Alert>
 
       <div class="space-y-6 overflow-y-auto flex-1 p-4 md:px-6">
-        <!-- Common Fields -->
-        <div class="space-y-4">
+        <!-- Form area with conditional disabling -->
+        <div 
+          :class="[
+            'relative',
+            isFormDisabled ? 'pointer-events-none' : ''
+          ]"
+          :inert="isFormDisabled"
+        >
+          <!-- Common Fields -->
+          <div class="space-y-4">
           <div>
             <label class="text-sm font-medium text-foreground">
               Name *
@@ -46,6 +54,8 @@
               v-model="formData.name"
               placeholder="Enter resource name"
               :class="hasFieldError('name') ? 'border-destructive' : ''"
+              :disabled="isFormDisabled"
+              :tabindex="isFormDisabled ? -1 : undefined"
             />
             <p v-if="hasFieldError('name')" class="text-sm text-destructive mt-1">
               {{ getFieldError('name') }}
@@ -61,6 +71,8 @@
               placeholder="Enter resource description"
               rows="3"
               :class="hasFieldError('description') ? 'border-destructive' : ''"
+              :disabled="isFormDisabled"
+              :tabindex="isFormDisabled ? -1 : undefined"
             />
             <p v-if="hasFieldError('description')" class="text-sm text-destructive mt-1">
               {{ getFieldError('description') }}
@@ -74,8 +86,9 @@
             <Select 
               v-model="formData.businessArea"
               @update:model-value="updateField('businessArea', $event)"
+              :disabled="isFormDisabled"
             >
-              <SelectTrigger>
+              <SelectTrigger :tabindex="isFormDisabled ? -1 : undefined">
                 <SelectValue placeholder="Select business area" />
               </SelectTrigger>
               <SelectContent>
@@ -181,51 +194,9 @@
                 />
               </div>
             </div>
-            
-            <!-- Type-specific properties -->
-            <div class="grid grid-cols-2 gap-4 mt-4">
-              <template v-if="props.resourceType === 'document'">
-                <div v-if="originalResource.fileSize">
-                  <label class="text-sm font-medium text-muted-foreground">File Size</label>
-                  <Input 
-                    :modelValue="formatFileSize(originalResource.fileSize)" 
-                    readonly 
-                    class="bg-muted text-muted-foreground"
-                  />
-                </div>
-                <div v-if="originalResource.mimeType">
-                  <label class="text-sm font-medium text-muted-foreground">File Type</label>
-                  <Input 
-                    :modelValue="originalResource.mimeType" 
-                    readonly 
-                    class="bg-muted text-muted-foreground"
-                  />
-                </div>
-              </template>
-              
-              <template v-else-if="props.resourceType === 'url'">
-                <div>
-                  <label class="text-sm font-medium text-muted-foreground">Monitor Status</label>
-                  <Input 
-                    :modelValue="originalResource.isActive ? 'Active' : 'Broken'" 
-                    readonly 
-                    :class="originalResource.isActive ? 'bg-muted text-muted-foreground' : 'bg-destructive/10 text-destructive'"
-                  />
-                </div>
-              </template>
-              
-              <template v-else-if="props.resourceType === 'video'">
-                <div v-if="originalResource.duration">
-                  <label class="text-sm font-medium text-muted-foreground">Duration</label>
-                  <Input 
-                    :modelValue="formatDuration(originalResource.duration)" 
-                    readonly 
-                    class="bg-muted text-muted-foreground"
-                  />
-                </div>
-              </template>
-            </div>
           </div>
+        </div>
+        <!-- End of form wrapper -->
         </div>
       </div>
 
@@ -234,7 +205,7 @@
           <!-- Preview/Open buttons (left side) -->
           <div class="flex items-center gap-2">
             <Button 
-              v-if="mode === 'edit' && canPreview" 
+              v-if="(mode === 'edit' || mode === 'view') && canPreview" 
               variant="outline" 
               size="sm" 
               @click="previewResource"
@@ -243,7 +214,7 @@
               Preview
             </Button>
             <Button 
-              v-if="mode === 'edit' && canOpen" 
+              v-if="(mode === 'edit' || mode === 'view') && canOpen" 
               variant="outline" 
               size="sm" 
               @click="openResource"
@@ -253,15 +224,40 @@
             </Button>
           </div>
           
-          <!-- Save/Cancel buttons (right side) -->
+          <!-- Action buttons (right side) -->
           <div class="flex items-center gap-2">
-            <Button variant="outline" @click="handleClose" :disabled="saving">
-              Cancel
-            </Button>
-            <Button @click="handleSave" :disabled="!canSave || saving">
-              <Save class="w-4 h-4 mr-2" />
-              {{ mode === 'create' ? 'Create' : 'Save Changes' }}
-            </Button>
+            <!-- View mode - not editing -->
+            <template v-if="mode === 'view' && !isEditing">
+              <Button variant="outline" @click="handleClose">
+                Close
+              </Button>
+              <Button @click="startEditing">
+                <Edit class="w-4 h-4 mr-2" />
+                Edit
+              </Button>
+            </template>
+            
+            <!-- View mode - editing -->
+            <template v-else-if="mode === 'view' && isEditing">
+              <Button variant="outline" @click="cancelEditing">
+                Cancel
+              </Button>
+              <Button @click="handleSave" :disabled="!canSave || saving">
+                <Save class="w-4 h-4 mr-2" />
+                Save Changes
+              </Button>
+            </template>
+            
+            <!-- Create/Edit modes -->
+            <template v-else>
+              <Button variant="outline" @click="handleClose" :disabled="saving">
+                Cancel
+              </Button>
+              <Button @click="handleSave" :disabled="!canSave || saving">
+                <Save class="w-4 h-4 mr-2" />
+                {{ mode === 'create' ? 'Create' : 'Save Changes' }}
+              </Button>
+            </template>
           </div>
         </div>
       </DialogFooter>
@@ -271,7 +267,7 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, nextTick } from 'vue'
-import { Save, Eye, ExternalLink, AlertCircle } from 'lucide-vue-next'
+import { Save, Eye, ExternalLink, AlertCircle, Edit } from 'lucide-vue-next'
 
 // UI Components
 import {
@@ -331,7 +327,7 @@ const resourceTypeConfigs: Record<ModalResourceType, { label: string; icon: any 
 
 interface Props {
   isOpen: boolean
-  mode: 'create' | 'edit'
+  mode: 'create' | 'edit' | 'view'
   resourceType: ModalResourceType
   resource?: Resource | null
 }
@@ -350,6 +346,7 @@ const saving = ref(false)
 const error = ref<string | null>(null)
 const validationErrors = ref<Record<string, string>>({})
 const originalResource = ref<Resource | null>(null)
+const isEditing = ref(false)
 const formData = ref<any>({
   name: '',
   description: '',
@@ -364,8 +361,11 @@ const resourceType = computed<ModalResourceType>(() => props.resourceType)
 // Computed properties
 const resourceTypeConfig = computed(() => resourceTypeConfigs[resourceType.value])
 
+const isViewMode = computed(() => props.mode === 'view')
+const isFormDisabled = computed(() => isViewMode.value && !isEditing.value)
+
 const canSave = computed(() => {
-  return formData.value.name?.trim() && !saving.value
+  return formData.value.name?.trim() && !saving.value && (props.mode !== 'view' || isEditing.value)
 })
 
 const canPreview = computed(() => {
@@ -496,8 +496,29 @@ const handleClose = () => {
   validationErrors.value = {}
   error.value = null
   originalResource.value = null
+  isEditing.value = false
   
   emit('close')
+}
+
+const startEditing = () => {
+  isEditing.value = true
+  error.value = null
+  validationErrors.value = {}
+}
+
+const cancelEditing = () => {
+  isEditing.value = false
+  error.value = null
+  validationErrors.value = {}
+  // Reset form data to original values
+  if (originalResource.value) {
+    formData.value = {
+      ...originalResource.value,
+      tags: originalResource.value.metadata?.tags || [],
+      businessArea: originalResource.value.businessArea || ''
+    }
+  }
 }
 
 const previewResource = () => {
@@ -637,11 +658,15 @@ watch(() => props.isOpen, async (newValue) => {
         lastUpdated: ''
       }
       console.log('✨ Create mode - formData reset')
-  } else if (props.resource && props.mode === 'edit') {
-      // Ensure edit mode data is properly loaded
-      console.log('📥 Edit mode - Loading resource:', props.resource)
+      isEditing.value = false
+  } else if (props.resource && (props.mode === 'edit' || props.mode === 'view')) {
+      // Ensure edit/view mode data is properly loaded
+      console.log('📥 Edit/View mode - Loading resource:', props.resource)
       originalResource.value = props.resource
-      const editFormData = {
+      // Set editing state immediately based on mode
+      isEditing.value = props.mode === 'edit'
+      console.log('🔒 Setting isEditing to:', isEditing.value, 'for mode:', props.mode)
+      const formDataForMode = {
         ...props.resource,
         metadata: { ...(props.resource as any).metadata || {} },
         tags: props.resource.metadata?.tags || [],
@@ -667,9 +692,9 @@ watch(() => props.isOpen, async (newValue) => {
         lastChecked: props.resource.lastChecked || '',
         lastUpdated: props.resource.lastUpdated || ''
       }
-  console.log('📝 Edit mode - Setting formData:', editFormData)
+  console.log('📝 Edit/View mode - Setting formData:', formDataForMode)
   // Mutate existing object to preserve reactivity bindings
-  Object.assign(formData.value, editFormData)
+  Object.assign(formData.value, formDataForMode)
     }
   }
 })

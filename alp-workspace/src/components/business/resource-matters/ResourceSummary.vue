@@ -76,7 +76,8 @@
   CheckSquare,
   Mail,
   Video,
-  FolderOpen
+  FolderOpen,
+  Edit
 } from 'lucide-vue-next'
   
   import type { Resource } from '@/alp-types/resources.types'
@@ -136,7 +137,9 @@
   // Methods
   const getActionIcon = (action: string) => {
     const icons = {
-      preview: Eye,
+      view: Eye,
+      edit: Edit,
+      preview: Edit, // Keep for backward compatibility
       open: ExternalLink,
       copy: Copy,
       play: Play,
@@ -147,7 +150,9 @@
   
   const getActionTitle = (action: string) => {
     const titles = {
-      preview: 'Preview resource',
+      view: 'View resource',
+      edit: 'Edit resource',
+      preview: 'Edit resource', // Keep for backward compatibility
       open: 'Open resource',
       copy: 'Copy link',
       play: 'Play video',

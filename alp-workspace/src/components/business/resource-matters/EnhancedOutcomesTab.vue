@@ -52,8 +52,8 @@
               v-for="resource in offering.resources"
               :key="resource.id"
               :resource="resource"
-              :actions="['preview', 'open']"
-              @click="openEditResource(resource)"
+              :actions="['view', 'edit']"
+              @click="openResource(resource)"
               @action="handleResourceAction"
             />
           </div>
@@ -75,8 +75,8 @@
                 v-for="resource in outcome.resources"
                 :key="resource.id"
                 :resource="resource"
-                :actions="['preview', 'open']"
-                @click="openEditResource(resource)"
+                :actions="['view', 'edit']"
+                @click="openResource(resource)"
                 @action="handleResourceAction"
               />
             </div>
@@ -138,8 +138,8 @@
                     v-for="resource in component.resources"
                     :key="resource.id"
                     :resource="resource"
-                    :actions="['preview', 'open']"
-                    @click="openEditResource(resource)"
+                    :actions="['view', 'edit']"
+                    @click="openResource(resource)"
                     @action="handleResourceAction"
                   />
                 </div>
@@ -351,7 +351,7 @@ const openSharePointFolder = (url: string) => {
 
 // Standardized resource edit modal
 type ModalResourceType = Exclude<GlobalResourceType, 'template'>
-const resourceModal = ref<{ isOpen: boolean; mode: 'create' | 'edit'; resourceType: ModalResourceType; resource: any | null }>({
+const resourceModal = ref<{ isOpen: boolean; mode: 'create' | 'edit' | 'view'; resourceType: ModalResourceType; resource: any | null }>({
   isOpen: false,
   mode: 'edit',
   resourceType: 'document',
@@ -369,20 +369,31 @@ const openEditResource = (resource: Resource) => {
 }
 
 const openResource = (resource: Resource) => {
-  // Handle different resource types
+  // Handle different resource types - open the actual resource
   switch (resource.type) {
     case 'url':
       window.open(resource.url, '_blank')
       break
-  case 'document':
-  case 'form':
-  case 'template':
-  case 'emailTemplate':
+    case 'document':
+    case 'form':
+    case 'template':
+    case 'emailTemplate':
       // For documents, forms, and templates, open in new tab or download
       window.open(resource.url, '_blank')
       break
     default:
       console.log('Opening resource:', resource.name)
+  }
+}
+
+const openResourceInViewMode = (resource: Resource) => {
+  // Open resource in view mode modal (read-only)
+  const modalType = (resource.type === 'template' ? 'document' : resource.type) as ModalResourceType
+  resourceModal.value = {
+    isOpen: true,
+    mode: 'view',
+    resourceType: modalType,
+    resource,
   }
 }
 
@@ -431,10 +442,10 @@ const closeResourceDetailModal = () => {
 const handleResourceAction = (action: string, resource: Resource) => {
   console.log('Resource action:', action, resource.name)
   // Handle resource actions from ResourceCard
-  if (action === 'preview') {
-  openEditResource(resource)
-  } else if (action === 'open') {
-    openResource(resource)
+  if (action === 'view') {
+    openResourceInViewMode(resource)
+  } else if (action === 'edit') {
+    openEditResource(resource)
   }
 }
 

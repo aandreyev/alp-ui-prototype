@@ -124,19 +124,21 @@
     <!-- Auto-populated properties (if file is uploaded) -->
     <div v-if="data?.fileName" class="bg-muted/30 rounded-lg p-4">
       <h4 class="text-sm font-medium mb-3">Document Properties</h4>
-      <div class="grid grid-cols-3 gap-4 text-sm">
+      <!-- First row: File Size and Last Updated -->
+      <div class="grid grid-cols-2 gap-4 text-sm mb-3">
         <div>
           <span class="text-muted-foreground">File Size:</span>
           <span class="ml-2 font-medium">{{ formatFileSize(data.fileSize || 0) }}</span>
-        </div>
-        <div>
-          <span class="text-muted-foreground">File Type:</span>
-          <span class="ml-2 font-medium">{{ data.mimeType }}</span>
         </div>
         <div v-if="data.lastUpdated">
           <span class="text-muted-foreground">Last Updated:</span>
           <span class="ml-2 font-medium">{{ formatDate(data.lastUpdated) }}</span>
         </div>
+      </div>
+      <!-- Second row: File Type (full width) -->
+      <div class="text-sm">
+        <span class="text-muted-foreground">File Type:</span>
+        <span class="ml-2 font-medium">{{ data.mimeType }}</span>
       </div>
     </div>
   </div>

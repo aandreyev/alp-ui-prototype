@@ -97,7 +97,7 @@ const filteredResources = computed(() => {
     .filter(r => !term || r.name.toLowerCase().includes(term) || (r.description || '').toLowerCase().includes(term))
 })
 
-const modal = ref<{ isOpen: boolean; mode: 'create'|'edit'; resource: Resource|null }>({
+const modal = ref<{ isOpen: boolean; mode: 'create'|'edit'|'view'; resource: Resource|null }>({
   isOpen: false,
   mode: 'create',
   resource: null,

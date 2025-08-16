@@ -385,7 +385,7 @@ const offering = ref<SimplifiedOffering>({
 const showComponentDesigner = ref(false)
 const selectedComponent = ref<SimplifiedComponent | null>(null)
 type ResourceType = 'document' | 'url' | 'form' | 'emailTemplate' | 'video' | 'vdFolder'
-const resourceModal = ref<{ isOpen: boolean; mode: 'create'|'edit'; resourceType: ResourceType; resource: any | null }>({
+const resourceModal = ref<{ isOpen: boolean; mode: 'create'|'edit'|'view'; resourceType: ResourceType; resource: any | null }>({
   isOpen: false,
   mode: 'create',
   resourceType: 'document',
@@ -525,7 +525,9 @@ const openResourceDetail = (resource: Resource) => {
 
 const handleResourceAction = (action: string, resource: Resource) => {
   console.log('Resource action:', action, resource.name)
-  if (action === 'open') {
+  if (action === 'preview') {
+    openEditResource(resource)
+  } else if (action === 'open') {
     window.open(resource.url, '_blank')
   }
 }
