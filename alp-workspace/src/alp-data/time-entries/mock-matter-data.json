@@ -1,0 +1,130 @@
+[
+  {
+    "id": "12345",
+    "name": "Smith v. Jones Construction",
+    "client": "Smith Holdings Ltd",
+    "outcomes": [
+      {
+        "id": "out-001",
+        "name": "Discovery & Evidence Gathering",
+        "description": "Collect and organize evidence for the case",
+        "components": [
+          {
+            "id": "comp-001",
+            "name": "Document Review",
+            "description": "Review and categorize case documents"
+          },
+          {
+            "id": "comp-002", 
+            "name": "Witness Interviews",
+            "description": "Conduct interviews with key witnesses"
+          },
+          {
+            "id": "comp-003",
+            "name": "Expert Consultation",
+            "description": "Consult with technical experts"
+          }
+        ]
+      },
+      {
+        "id": "out-002",
+        "name": "Legal Research & Analysis",
+        "description": "Research applicable laws and precedents",
+        "components": [
+          {
+            "id": "comp-004",
+            "name": "Case Law Research",
+            "description": "Research relevant case precedents"
+          },
+          {
+            "id": "comp-005",
+            "name": "Statutory Analysis",
+            "description": "Analyze applicable statutes and regulations"
+          }
+        ]
+      },
+      {
+        "id": "out-003",
+        "name": "Settlement Negotiations",
+        "description": "Negotiate settlement terms with opposing counsel",
+        "components": [
+          {
+            "id": "comp-006",
+            "name": "Initial Settlement Discussion",
+            "description": "Preliminary settlement discussions"
+          },
+          {
+            "id": "comp-007",
+            "name": "Mediation Preparation",
+            "description": "Prepare materials for mediation"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "67890",
+    "name": "ABC Corp Merger",
+    "client": "ABC Corporation",
+    "outcomes": [
+      {
+        "id": "out-004",
+        "name": "Due Diligence",
+        "description": "Comprehensive due diligence review",
+        "components": [
+          {
+            "id": "comp-008",
+            "name": "Financial Review",
+            "description": "Review financial statements and records"
+          },
+          {
+            "id": "comp-009",
+            "name": "Legal Entity Review",
+            "description": "Review corporate structure and compliance"
+          }
+        ]
+      },
+      {
+        "id": "out-005",
+        "name": "Documentation Preparation",
+        "description": "Prepare merger documentation",
+        "components": [
+          {
+            "id": "comp-010",
+            "name": "Merger Agreement",
+            "description": "Draft and review merger agreement"
+          },
+          {
+            "id": "comp-011",
+            "name": "Regulatory Filings",
+            "description": "Prepare regulatory filing documents"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "11111",
+    "name": "Estate Planning - Johnson Family",
+    "client": "Johnson Family Trust",
+    "outcomes": [
+      {
+        "id": "out-006",
+        "name": "Will & Testament",
+        "description": "Prepare comprehensive will and testament",
+        "components": [
+          {
+            "id": "comp-012",
+            "name": "Asset Inventory",
+            "description": "Catalog and value estate assets"
+          },
+          {
+            "id": "comp-013",
+            "name": "Will Drafting",
+            "description": "Draft will document"
+          }
+        ]
+      }
+    ]
+  }
+]

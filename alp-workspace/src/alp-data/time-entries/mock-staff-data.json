@@ -1,0 +1,44 @@
+[
+  {
+    "id": "staff-001",
+    "name": "Sarah Thompson",
+    "title": "Senior Partner",
+    "rate": 450
+  },
+  {
+    "id": "staff-002", 
+    "name": "Michael Chen",
+    "title": "Partner",
+    "rate": 380
+  },
+  {
+    "id": "staff-003",
+    "name": "Emily Rodriguez",
+    "title": "Senior Associate",
+    "rate": 320
+  },
+  {
+    "id": "staff-004",
+    "name": "David Kim",
+    "title": "Associate",
+    "rate": 280
+  },
+  {
+    "id": "staff-005",
+    "name": "Jessica Brown",
+    "title": "Junior Associate", 
+    "rate": 240
+  },
+  {
+    "id": "staff-006",
+    "name": "Robert Wilson",
+    "title": "Paralegal",
+    "rate": 180
+  },
+  {
+    "id": "staff-007",
+    "name": "Amanda Davis",
+    "title": "Legal Assistant",
+    "rate": 120
+  }
+]
