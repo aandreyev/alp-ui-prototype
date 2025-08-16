@@ -102,6 +102,28 @@
             </div>
           </div>
 
+          <!-- Draft Time Entries Prototype -->
+          <div class="prototype-card" @click="selectPrototype('time-entries-draft')">
+            <div class="prototype-icon">
+              <svg class="w-12 h-12 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+            </div>
+            <h2 class="prototype-title">Draft Time Entries</h2>
+            <p class="prototype-description">
+              Time entry automation and management system. Create, edit, and manage draft time entries 
+              with automated workflows, client/matter association, and bulk operations.
+            </p>
+            <div class="prototype-features">
+              <span class="feature-tag">Time Tracking</span>
+              <span class="feature-tag">Automation</span>
+              <span class="feature-tag">Bulk Operations</span>
+            </div>
+            <div class="prototype-cta">
+              <span>View Prototype →</span>
+            </div>
+          </div>
+
         </div>
 
         <!-- URL Instructions -->
@@ -120,6 +142,14 @@
             <div class="text-blue-700">
               <strong>Resource Association:</strong> 
               <span class="ml-2 text-blue-600">?prototype=resource-association</span>
+            </div>
+            <div class="text-blue-700">
+              <strong>Simplified Resources:</strong> 
+              <span class="ml-2 text-blue-600">?prototype=simplified-resources</span>
+            </div>
+            <div class="text-blue-700">
+              <strong>Draft Time Entries:</strong> 
+              <span class="ml-2 text-blue-600">?prototype=time-entries-draft</span>
             </div>
           </div>
         </div>
